@@ -864,18 +864,26 @@ function setupContactForm() {
 
     const timestamp = new Date().toLocaleString();
 
-    // 1. Save persistently to local inquiries endpoint if available
+    // 1. Save persistently to GitHub Cloud & LocalStorage
+    const inquiryObj = {
+      id: "inq_" + Date.now(),
+      name,
+      phone,
+      projectType,
+      message,
+      targetAdminWhatsApp: formattedAdminNum,
+      timestamp: new Date().toISOString(),
+      formattedTime: timestamp
+    };
+    if (typeof saveInquiryToCloud === "function") {
+      saveInquiryToCloud(inquiryObj);
+    }
+
+    // Also send to local SQLite backend if running Node server
     fetch("/api/inquiries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        phone,
-        projectType,
-        message,
-        targetAdminWhatsApp: formattedAdminNum,
-        timestamp
-      })
+      body: JSON.stringify(inquiryObj)
     }).catch(() => {});
 
     // 2. Dispatch inquiry email & webhook to Subhan's verified email
