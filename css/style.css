@@ -86,6 +86,18 @@ body {
 /* ==========================================================================
    IRIDESCENT FLUID CANVAS & CURSOR FOLLOWER
    ========================================================================== */
+#space-dots-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: transparent;
+  transform: translateZ(0);
+}
+
 #particle-canvas,
 #fluid {
   position: fixed;
