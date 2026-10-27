@@ -16,14 +16,5 @@
     "rating": 5,
     "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=Sarah%20Jenkins",
     "date": "2026-10-24"
-  },
-  {
-    "id": "rev-3",
-    "author": "Engr. Tariq Mehmood",
-    "title": "Senior Tech Consultant & Academic Advisor",
-    "quote": "Subhan's rapid progression from ICS and creative multimedia into robust full-stack architecture and robotics engineering is extraordinary. A truly passionate Pakistani developer with tremendous technical versatility.",
-    "rating": 5,
-    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-    "date": "2026-08-20"
   }
 ]
