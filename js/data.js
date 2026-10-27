@@ -63,6 +63,26 @@ const DEFAULT_CONFIG = {
     whatsappNumber: "03446266246",
     resumeUrl: "#"
   },
+  channels: [
+    {
+      id: "ch-youtube",
+      title: "YouTube Channel",
+      subtitle: "Watch Tech & 3D Videos",
+      url: "https://youtube.com",
+      icon: "fab fa-youtube",
+      color: "#ff0000",
+      enabled: true
+    },
+    {
+      id: "ch-tiktok",
+      title: "TikTok Profile",
+      subtitle: "Creative Edits & Behind The Scenes",
+      url: "https://tiktok.com",
+      icon: "fab fa-tiktok",
+      color: "#fe2c55",
+      enabled: true
+    }
+  ],
   projects: [
     {
       id: "proj-1",
