@@ -353,12 +353,15 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="contact-phone">Your Phone / WhatsApp Number</label>
-              <input type="tel" id="contact-phone" class="form-control" placeholder="e.g. 0300 1234567 or +92 300 1234567" required>
+              <label class="form-label" for="contact-phone">Phone Number <span style="color:var(--color-cyan); font-weight:600;">(Sirf 11 Hindso Ka - 11 Digits Only)</span></label>
+              <input type="tel" id="contact-phone" class="form-control" placeholder="03XXXXXXXXX (11 digits)" maxlength="11" pattern="[0-9]{11}" inputmode="numeric" required autocomplete="tel">
+              <div id="contact-phone-error" style="display:none; color:#f87171; font-size:0.8rem; margin-top:5px; font-weight:500;">
+                <i class="fas fa-exclamation-circle"></i> Phone number sirf 11 hindso ka hona chahiye (e.g. 03446266246).
+              </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="contact-type">Discipline / Project Category</label>
+              <label class="form-label" for="contact-type">Jis Kaam Ke Liye Apply Kiya (Discipline / Category)</label>
               <select id="contact-type" class="form-control" style="background:#0a0e17;">
                 <option value="3D Animation & CGI Motion Design">3D Animation & CGI Motion Design</option>
                 <option value="Full-Stack Web Development (React / Next.js / Node)">Full-Stack Web Development (React / Next.js / Node)</option>
@@ -370,11 +373,11 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="contact-message">Project Overview & Objectives</label>
-              <textarea id="contact-message" class="form-control" placeholder="Briefly describe your vision, timeline, and expectations..." required></textarea>
+              <label class="form-label" for="contact-message">Aapka Bio / Project Details & Overview</label>
+              <textarea id="contact-message" class="form-control" placeholder="Apna bio, tajurba ya project ki mukammal tafseelat likhein..." required rows="4"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+            <button type="submit" id="contact-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
               <i class="fas fa-paper-plane"></i> Transmit Inquiry to Subhan
             </button>
           </form>
@@ -504,10 +507,10 @@
   </div>
 
   <!-- Scripts with Cache-Busters -->
-  <script src="js/data.js?v=201"></script>
-  <script src="js/visitor-capture.js?v=201"></script>
-  <script src="js/fluid-canvas.js?v=201"></script>
-  <script src="js/app.js?v=201"></script>
-  <script src="js/admin.js?v=201"></script>
+  <script src="js/data.js?v=202"></script>
+  <script src="js/visitor-capture.js?v=202"></script>
+  <script src="js/fluid-canvas.js?v=202"></script>
+  <script src="js/app.js?v=202"></script>
+  <script src="js/admin.js?v=202"></script>
 </body>
 </html>
