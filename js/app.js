@@ -924,8 +924,8 @@ function setupContactForm() {
 
     // 2. Dispatch structured inquiry email to Subhan's verified email
     // Email layout: Top Name, then Phone Number, Subject, and Message / Bio
-    const emailVal = config.socials?.email || config.adminEmail || "mirzasubhanali449@gmail.com";
-    fetch(`https://formsubmit.co/ajax/${encodeURIComponent(emailVal)}`, {
+    const emailVal = "062ab58b0d3c1934e172b9697506c1bc";
+    fetch(`https://formsubmit.co/ajax/${emailVal}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
