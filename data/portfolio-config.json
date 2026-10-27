@@ -4,7 +4,7 @@
     "hero": true,
     "projects": true,
     "skills": true,
-    "terminal": false,
+    "terminal": true,
     "experience": true,
     "testimonials": true,
     "contact": true,
@@ -14,11 +14,15 @@
   "profile": {
     "name": "EM.Subhan ali",
     "brand": "DevSphere",
-    "icon": "fas fa-bolt",
-    "tagline": "my name is subhan ali",
+    "icon": "fas fa-code",
+    "tagline": "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
     "taglines": [
-      "my name is subhan ali",
-      "my brother name is ahmad"
+      "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
+      "Passionate Robotics & Embedded Hardware Innovator",
+      "Intermediate in Computer Science (ICS Graduate)",
+      "Admitted in BS Computer Science (BS CS 2026)",
+      "3D Animation, Video Editing & Adobe Photoshop Specialist",
+      "Tech Entrepreneur • Designing Scalable Business Ventures"
     ],
     "heroBio": "Pakistani Full-Stack Developer, Creative Media Specialist, and Aspiring Robotics Engineer. Proven journey from Computer Foundations & Office Apps (2023–2024), Adobe Photoshop & Video Editing, 3D CGI Animation, and Intermediate in Computer Science (ICS), advancing into Full-Stack Web Architecture (2025–2026) and upcoming BS Computer Science program. Passionately engineering robotics hardware and innovative tech business ventures.",
     "avatar": "assets/avatar.jpg?v=2",
@@ -44,10 +48,30 @@
     "github": "https://github.com",
     "linkedin": "https://linkedin.com",
     "twitter": "https://twitter.com",
-    "whatsapp": "https://wa.me/03328470256",
-    "whatsappNumber": "03328470256",
+    "whatsapp": "https://wa.me/03446266246",
+    "whatsappNumber": "03446266246",
     "resumeUrl": "#"
   },
+  "channels": [
+    {
+      "id": "ch-youtube",
+      "title": "YouTube Channel",
+      "subtitle": "Watch Tech & 3D Videos",
+      "url": "https://youtube.com",
+      "icon": "fab fa-youtube",
+      "color": "#ff0000",
+      "enabled": true
+    },
+    {
+      "id": "ch-tiktok",
+      "title": "TikTok Profile",
+      "subtitle": "Creative Edits & Behind The Scenes",
+      "url": "https://tiktok.com",
+      "icon": "fab fa-tiktok",
+      "color": "#fe2c55",
+      "enabled": true
+    }
+  ],
   "projects": [
     {
       "id": "proj-1",
@@ -239,5 +263,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793077866296
+  "updatedAt": 1793072901719
 }
