@@ -110,7 +110,32 @@ const server = http.createServer((req, res) => {
   // ==========================================
   // API: Reviews & Testimonials (SQLite)
   // ==========================================
-  if (pathname === '/api/reviews') {
+  if (pathname === '/api/reviews' || pathname.startsWith('/api/reviews/')) {
+    if (req.method === 'DELETE' || (req.method === 'POST' && pathname === '/api/reviews/delete')) {
+      let id = (pathname.startsWith('/api/reviews/') && pathname !== '/api/reviews/delete') ? decodeURIComponent(pathname.split('/').pop()) : '';
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          if (body) {
+            const parsed = JSON.parse(body);
+            if (parsed.id) id = parsed.id;
+          }
+          if (id) {
+            db.deleteReview(id);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ success: true, deletedId: id }));
+          }
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Review ID required' }));
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
     if (req.method === 'GET') {
       const reviews = db.getReviews();
       res.writeHead(200, { 'Content-Type': 'application/json' });
