@@ -17,24 +17,10 @@ class AudioEffects {
 
 const sfx = new AudioEffects();
 
-// Toast Notifications
-function showToast(message, type = "info") {
-  const container = document.getElementById("toast-container");
-  if (!container) return;
-
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  let icon = '<i class="fas fa-check-circle" style="color: #4ade80;"></i>';
-  if (type === "warn") icon = '<i class="fas fa-exclamation-triangle" style="color: #fb923c;"></i>';
-
-  toast.innerHTML = `${icon}<span>${message}</span>`;
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateX(50px)";
-    setTimeout(() => toast.remove(), 300);
-  }, 4200);
+// Toast Notifications - Permanently Disabled
+function showToast() {
+  // All toast notification boxes disabled per user request
+  return;
 }
 
 // Visitor State & Lead Handling
