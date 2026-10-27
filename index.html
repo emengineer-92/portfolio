@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Stylesheet with Cache-Bust -->
-  <link rel="stylesheet" href="css/style.css?v=211">
+  <link rel="stylesheet" href="css/style.css?v=212">
 
   <style>
     /* Clean mouse pointer everywhere with ZERO follower circles */
@@ -56,44 +56,43 @@
   <canvas id="particle-canvas"></canvas>
   <div class="ambient-mesh"></div>
 
+  <!-- ==========================================
+       FLOATING NAVBAR (ALWAYS VISIBLE ON ALL SCROLLS)
+       ========================================== -->
+  <header class="navbar" id="site-navbar">
+    <a href="#home" class="nav-brand" id="brand-logo-link">
+      <div class="brand-icon-wrap" id="brand-icon-trigger" title="DevSphere">
+        <i class="fas fa-code" id="brand-icon-i"></i>
+      </div>
+      <span><span class="dyn-profile-name">EM.Subhan ali</span> <span class="gradient-accent dyn-profile-brand">DevSphere</span></span>
+    </a>
+
+    <!-- Horizontal 3-Dot Expandable Navigation inside Header Banner -->
+    <div class="nav-horizontal-wrapper">
+      <div class="nav-horizontal-links" id="nav-horizontal-links">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#projects" class="nav-link active">Projects</a></li>
+          <li><a href="#skills" class="nav-link">Expertise</a></li>
+          <li><a href="#terminal" class="nav-link">Terminal</a></li>
+          <li><a href="#experience" class="nav-link">Experience</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+
+        <button id="visitor-badge-btn" class="visitor-badge" onclick="openVisitorModal()" title="Leave your email to connect with EM.Subhan ali">
+          <span class="dot"></span>Leave Email
+        </button>
+
+      </div>
+
+      <!-- 3-Dot Toggle Button right in the horizontal banner -->
+      <button id="nav-dots-btn" class="nav-dots-btn" aria-label="Toggle Navigation Buttons" title="Toggle Menu Buttons" onclick="toggleHorizontalNav(event)">
+        <i class="fas fa-ellipsis-v" id="nav-dots-icon"></i>
+      </button>
+    </div>
+  </header>
+
   <!-- Main Site Wrapper -->
   <div class="site-wrapper">
-
-    <!-- ==========================================
-         FLOATING NAVBAR
-         ========================================== -->
-    <header class="navbar" id="site-navbar">
-      <a href="#home" class="nav-brand" id="brand-logo-link">
-        <div class="brand-icon-wrap" id="brand-icon-trigger" title="DevSphere">
-          <i class="fas fa-code" id="brand-icon-i"></i>
-        </div>
-        <span><span class="dyn-profile-name">EM.Subhan ali</span> <span class="gradient-accent dyn-profile-brand">DevSphere</span></span>
-      </a>
-
-      <!-- Horizontal 3-Dot Expandable Navigation inside Header Banner -->
-      <div class="nav-horizontal-wrapper">
-        <div class="nav-horizontal-links" id="nav-horizontal-links">
-          <ul class="nav-links" id="nav-links">
-            <li><a href="#projects" class="nav-link active">Projects</a></li>
-            <li><a href="#skills" class="nav-link">Expertise</a></li>
-            <li><a href="#terminal" class="nav-link">Terminal</a></li>
-            <li><a href="#experience" class="nav-link">Experience</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
-          </ul>
-
-          <button id="visitor-badge-btn" class="visitor-badge" onclick="openVisitorModal()" title="Leave your email to connect with EM.Subhan ali">
-            <span class="dot"></span>Leave Email
-          </button>
-
-        </div>
-
-        <!-- 3-Dot Toggle Button right in the horizontal banner -->
-        <button id="nav-dots-btn" class="nav-dots-btn" aria-label="Toggle Navigation Buttons" title="Toggle Menu Buttons" onclick="toggleHorizontalNav(event)">
-          <i class="fas fa-ellipsis-v" id="nav-dots-icon"></i>
-        </button>
-      </div>
-    </header>
-
     <main>
       <!-- ==========================================
            HERO SECTION
@@ -547,11 +546,11 @@
   </div>
 
   <!-- Scripts with Cache-Busters -->
-  <script src="js/data.js?v=211"></script>
-  <script src="js/space-dots.js?v=211"></script>
-  <script src="js/visitor-capture.js?v=211"></script>
-  <script src="js/fluid-canvas.js?v=211"></script>
-  <script src="js/app.js?v=211"></script>
-  <script src="js/admin.js?v=211"></script>
+  <script src="js/data.js?v=212"></script>
+  <script src="js/space-dots.js?v=212"></script>
+  <script src="js/visitor-capture.js?v=212"></script>
+  <script src="js/fluid-canvas.js?v=212"></script>
+  <script src="js/app.js?v=212"></script>
+  <script src="js/admin.js?v=212"></script>
 </body>
 </html>
