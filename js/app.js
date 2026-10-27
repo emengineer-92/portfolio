@@ -53,6 +53,7 @@ window.refreshPortfolioFromConfig = function(cfg) {
   if (!cfg) cfg = getActiveConfig();
   applyThemeToDOM(cfg);
   applySectionVisibility(cfg);
+  initTypewriter(cfg);
   renderProjectsInPortfolio(cfg);
   renderSkillsInPortfolio(cfg);
   renderExperiencesInPortfolio(cfg);
@@ -65,6 +66,10 @@ function initTypewriter(config) {
   const taglineEl = document.getElementById("dyn-hero-tagline");
   if (!taglineEl) return;
 
+  if (window.__typewriterTimeout) {
+    clearTimeout(window.__typewriterTimeout);
+  }
+
   const defaultPhrases = [
     "Senior Full-Stack Developer & Software Architect",
     "Specialist in Next.js, React & Scalable Cloud Systems",
@@ -74,7 +79,7 @@ function initTypewriter(config) {
 
   const phrases = (config?.profile?.taglines && config.profile.taglines.length > 0)
     ? config.profile.taglines
-    : (config?.profile?.tagline ? [config.profile.tagline, ...defaultPhrases.slice(1)] : defaultPhrases);
+    : (config?.profile?.tagline ? [config.profile.tagline] : defaultPhrases);
 
   let phraseIndex = 0;
   let charIndex = 0;
@@ -104,12 +109,12 @@ function initTypewriter(config) {
       delay = 400;
     }
 
-    setTimeout(tick, delay);
+    window.__typewriterTimeout = setTimeout(tick, delay);
   }
 
   // Clear static placeholder and begin smooth typing
   taglineEl.textContent = "";
-  setTimeout(tick, 450);
+  window.__typewriterTimeout = setTimeout(tick, 450);
 }
 
 // Dynamic Styler & Profile Data Renderer
@@ -122,6 +127,12 @@ function applyThemeToDOM(config) {
   if (config.theme?.secondaryColor) root.style.setProperty("--secondary-color", config.theme.secondaryColor);
   if (config.theme?.accentColor) root.style.setProperty("--accent-color", config.theme.accentColor);
   if (config.theme?.borderRadius) root.style.setProperty("--border-radius", config.theme.borderRadius);
+
+  // Brand Logo Icon
+  const brandIconEl = document.getElementById("brand-icon-i") || document.querySelector(".brand-icon-wrap i");
+  if (brandIconEl) {
+    brandIconEl.className = config.profile?.icon || "fas fa-code";
+  }
 
   // Text contents
   const heroName = document.querySelectorAll(".dyn-profile-name");
