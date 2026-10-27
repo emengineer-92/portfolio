@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Cloudflare tunnel binary (Large binary >50MB)
+cloudflared.exe
+
+# Temporary files & logs
+*.log
+live-link.txt
+
+# OS metadata
+.DS_Store
+Thumbs.db
