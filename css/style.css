@@ -2832,3 +2832,249 @@ footer {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ==========================================================================
+   REDOYANUL HAQUE STYLE OPENING LOADER SCREEN
+   ========================================================================== */
+.opening-loader-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #060911;
+  z-index: 999999999;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+}
+
+.opening-loader-screen.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Header branding in loader */
+.loader-top-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 24px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  box-sizing: border-box;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+.loader-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.loader-logo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px var(--color-cyan);
+}
+
+.loader-role-tag {
+  color: var(--color-cyan);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+}
+
+/* Background running marquee */
+.loader-marquee-wrap {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0.05;
+  user-select: none;
+}
+
+.loader-marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: loaderMarqueeAnim 22s linear infinite;
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 900;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 6px;
+}
+
+@keyframes loaderMarqueeAnim {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Center Pill / Capsule Loader */
+.loading-wrap {
+  --Lsize: 190px;
+  padding: 6px;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 100px;
+  background-color: #0d121f;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  overflow: hidden;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-button {
+  padding: 16px 42px;
+  border-radius: 100px;
+  background-color: #030509;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 700;
+  position: relative;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  height: 58px;
+  font-family: var(--font-mono);
+  box-sizing: border-box;
+}
+
+/* Mouse hover lighting */
+.loading-hover {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.5) 0%, rgba(168, 85, 247, 0) 70%);
+  width: 250px;
+  height: 120px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(25px);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* Content 1: Loading Counter */
+.loading-container {
+  position: absolute;
+  width: 100%;
+  max-width: var(--Lsize);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: max-width 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.loading-content {
+  position: relative;
+  background-color: transparent;
+  width: 100%;
+  overflow: hidden;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.loading-content-in {
+  position: relative;
+  width: var(--Lsize);
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.loading-content-in span {
+  color: var(--color-cyan);
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+.loading-box {
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  background-color: var(--color-cyan);
+  box-shadow: 0 0 8px var(--color-cyan);
+  animation: blinkCursor 0.8s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Content 2: Welcome Text */
+.loading-content2 {
+  position: relative;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  width: var(--Lsize);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 800;
+  font-size: 1.15rem;
+  background: linear-gradient(135deg, #38bdf8, #c084fc, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+}
+
+/* State: Loading Complete (100% reached -> Welcome reveals) */
+.loading-complete .loading-container {
+  max-width: 0 !important;
+  opacity: 0 !important;
+}
+
+.loading-complete .loading-content2 {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* State: Clicked / Explode reveal into Portfolio */
+.loading-clicked {
+  transform: scale(25) !important;
+  opacity: 0 !important;
+  transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.6s ease !important;
+  pointer-events: none !important;
+}
+
