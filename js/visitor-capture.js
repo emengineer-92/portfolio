@@ -42,20 +42,35 @@ const VisitorState = {
   visitorEmail: null,
 
   init() {
-    const current = localStorage.getItem(STORAGE_KEYS.CURRENT_VISITOR);
-    if (current) {
-      this.visitorEmail = current;
-      this.updateNavbarBadge();
-    }
+    const keys = (typeof window !== "undefined" && window.STORAGE_KEYS) ? window.STORAGE_KEYS : {
+      CURRENT_VISITOR: "devsphere_current_visitor",
+      VISITORS: "devsphere_visitors_list",
+      ACCESS_ALLOWED: "devsphere_visitor_allowed"
+    };
+
+    try {
+      const current = localStorage.getItem(keys.CURRENT_VISITOR);
+      if (current) {
+        this.visitorEmail = current;
+        this.updateNavbarBadge();
+      }
+    } catch (e) {}
+    
     this.setupListeners();
 
-    // Auto-open welcome modal on page load only if visitorGate section is enabled
-    setTimeout(() => {
+    // Check if user has already granted / dismissed access or if section is turned off
+    try {
+      const alreadyAllowed = localStorage.getItem(keys.ACCESS_ALLOWED) === "true";
       const cfg = typeof getActiveConfig === 'function' ? getActiveConfig() : null;
-      if (!cfg || cfg.sections?.visitorGate !== false) {
-        openVisitorModal();
+      const isGateEnabled = !cfg || cfg.sections?.visitorGate !== false;
+
+      // Auto-open welcome modal ONLY on the first visit if visitorGate is enabled and NOT yet allowed
+      if (!alreadyAllowed && isGateEnabled) {
+        setTimeout(() => {
+          openVisitorModal();
+        }, 500);
       }
-    }, 500);
+    } catch (e) {}
   },
 
   handleEmailSubmit(inputEmail) {
@@ -69,6 +84,10 @@ const VisitorState = {
 
     // Save locally
     saveVisitorLead(cleanEmail);
+
+    try {
+      localStorage.setItem("devsphere_visitor_allowed", "true");
+    } catch (e) {}
 
     // Update UI badge
     this.updateNavbarBadge();
@@ -118,6 +137,12 @@ function submitVisitorAccess(isAllow) {
   const input = document.getElementById("visitor-email-input");
   const emailVal = input ? input.value.trim() : "";
 
+  // Always remember access choice in localStorage so it NEVER resets on refresh!
+  try {
+    localStorage.setItem("devsphere_visitor_allowed", "true");
+    localStorage.setItem("devsphere_access_choice", isAllow ? "allowed" : "guest");
+  } catch (e) {}
+
   if (isAllow) {
     if (emailVal && emailVal.includes("@")) {
       const cleanEmail = emailVal.toLowerCase();
@@ -152,4 +177,7 @@ function openVisitorModal() {
 function closeVisitorModal() {
   const modal = document.getElementById("visitor-gate-modal");
   if (modal) modal.classList.remove("active");
+  try {
+    localStorage.setItem("devsphere_visitor_allowed", "true");
+  } catch (e) {}
 }
