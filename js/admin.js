@@ -184,6 +184,9 @@
             <button type="button" class="admin-tab-btn" data-tab="tab-skills-exp">
               <i class="fas fa-layer-group"></i> Skills &amp; Timeline
             </button>
+            <button type="button" class="admin-tab-btn" data-tab="tab-channels">
+              <i class="fas fa-share-alt"></i> Direct Channels (<span id="admin-channel-counter">2</span>)
+            </button>
             <button type="button" class="admin-tab-btn" data-tab="tab-backup">
               <i class="fas fa-database"></i> Backup &amp; Reset
             </button>
@@ -854,6 +857,70 @@
             </div>
           </div>
 
+          <!-- TAB: DIRECT CHANNELS (YouTube, TikTok, Links) -->
+          <div class="admin-tab-pane" id="tab-channels">
+            <div class="admin-pane-intro">
+              <h3 style="color:var(--color-cyan); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-share-alt"></i> Direct Channels &amp; Social Links
+              </h3>
+              <p>Add your YouTube channel, TikTok profile, Instagram, or custom links. These appear directly in your portfolio's Contact &amp; Direct Channels section.</p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h4 style="color:#fff; margin:0;"><i class="fas fa-list"></i> Active Channels</h4>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-toggle-channel-form">
+                <i class="fas fa-plus-circle"></i> Add New Channel
+              </button>
+            </div>
+
+            <!-- Add / Edit Channel Form Wrapper -->
+            <div id="admin-channel-form-wrap" style="display:none; background:rgba(15, 23, 42, 0.7); border:1px solid rgba(56, 189, 248, 0.3); border-radius:16px; padding:20px; margin-bottom:24px;">
+              <h4 id="channel-form-title" style="margin-bottom:14px; color:var(--color-cyan);"><i class="fas fa-plus"></i> Add New Channel</h4>
+              <div class="admin-form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="adm-ch-title">Platform / Title *</label>
+                  <input type="text" id="adm-ch-title" class="form-control" placeholder="e.g. YouTube Channel, TikTok Profile">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="adm-ch-subtitle">Subtitle / Description</label>
+                  <input type="text" id="adm-ch-subtitle" class="form-control" placeholder="e.g. Watch Tech &amp; 3D Videos">
+                </div>
+                <div class="form-group form-col-full">
+                  <label class="form-label" for="adm-ch-url">Channel / Profile URL *</label>
+                  <input type="url" id="adm-ch-url" class="form-control" placeholder="https://youtube.com/@yourchannel">
+                </div>
+                <div class="form-group form-col-full">
+                  <label class="form-label">Choose Preset Platform &amp; Icon</label>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="YouTube Channel" data-sub="Watch Tech &amp; 3D Videos" data-icon="fab fa-youtube" data-color="#ff0000"><i class="fab fa-youtube" style="color:#ff0000;"></i> YouTube</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="TikTok Profile" data-sub="Creative Edits &amp; Behind The Scenes" data-icon="fab fa-tiktok" data-color="#fe2c55"><i class="fab fa-tiktok" style="color:#fe2c55;"></i> TikTok</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="Instagram Profile" data-sub="Photos &amp; Visual Showcase" data-icon="fab fa-instagram" data-color="#e1306c"><i class="fab fa-instagram" style="color:#e1306c;"></i> Instagram</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="GitHub Profile" data-sub="Open Source Projects &amp; Code" data-icon="fab fa-github" data-color="#a855f7"><i class="fab fa-github" style="color:#a855f7;"></i> GitHub</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="LinkedIn Network" data-sub="Professional Connect" data-icon="fab fa-linkedin-in" data-color="#0a66c2"><i class="fab fa-linkedin-in" style="color:#0a66c2;"></i> LinkedIn</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="Facebook Page" data-sub="Official Updates" data-icon="fab fa-facebook" data-color="#1877f2"><i class="fab fa-facebook" style="color:#1877f2;"></i> Facebook</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="Twitter / X" data-sub="Tech Thoughts &amp; Updates" data-icon="fab fa-x-twitter" data-color="#ffffff"><i class="fab fa-x-twitter"></i> X (Twitter)</button>
+                    <button type="button" class="btn btn-secondary btn-sm ch-preset-btn" data-title="Custom Website" data-sub="External Link" data-icon="fas fa-globe" data-color="#38bdf8"><i class="fas fa-globe" style="color:#38bdf8;"></i> Custom Link</button>
+                  </div>
+                  <div style="display:flex; gap:12px; align-items:center;">
+                    <input type="text" id="adm-ch-icon" class="form-control" placeholder="fab fa-youtube" style="flex:2;">
+                    <input type="color" id="adm-ch-color" value="#ff0000" style="height:44px; width:54px; border:none; background:transparent; cursor:pointer;" title="Choose Brand Color">
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:16px;">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-save-channel-item">
+                  <i class="fas fa-save"></i> Save Channel
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-cancel-channel-item">
+                  Cancel
+                </button>
+              </div>
+            </div>
+
+            <!-- Channels List -->
+            <div id="admin-channels-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+
         </div>
 
         <!-- Sticky Footer -->
@@ -1145,6 +1212,86 @@
       });
     });
 
+    // Channel Form Controls
+    const btnToggleChannelForm = document.getElementById("btn-toggle-channel-form");
+    const channelFormWrap = document.getElementById("admin-channel-form-wrap");
+    const btnCancelChannel = document.getElementById("btn-cancel-channel-item");
+    const btnSaveChannel = document.getElementById("btn-save-channel-item");
+
+    if (btnToggleChannelForm && channelFormWrap) {
+      btnToggleChannelForm.addEventListener("click", () => {
+        channelFormWrap.style.display = channelFormWrap.style.display === "none" ? "block" : "none";
+        if (channelFormWrap.style.display === "block") {
+          channelFormWrap.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    }
+
+    if (btnCancelChannel && channelFormWrap) {
+      btnCancelChannel.addEventListener("click", () => {
+        channelFormWrap.style.display = "none";
+      });
+    }
+
+    // Channel Presets Click
+    document.querySelectorAll(".ch-preset-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const title = btn.dataset.title || "";
+        const sub = btn.dataset.sub || "";
+        const icon = btn.dataset.icon || "";
+        const color = btn.dataset.color || "#38bdf8";
+
+        const titleInp = document.getElementById("adm-ch-title");
+        const subInp = document.getElementById("adm-ch-subtitle");
+        const iconInp = document.getElementById("adm-ch-icon");
+        const colorInp = document.getElementById("adm-ch-color");
+
+        if (titleInp && !titleInp.value) titleInp.value = title;
+        if (subInp && !subInp.value) subInp.value = sub;
+        if (iconInp) iconInp.value = icon;
+        if (colorInp) colorInp.value = color;
+      });
+    });
+
+    if (btnSaveChannel) {
+      btnSaveChannel.addEventListener("click", () => {
+        const title = (document.getElementById("adm-ch-title")?.value || "").trim();
+        const subtitle = (document.getElementById("adm-ch-subtitle")?.value || "").trim();
+        const url = (document.getElementById("adm-ch-url")?.value || "").trim();
+        const icon = (document.getElementById("adm-ch-icon")?.value || "fas fa-link").trim();
+        const color = document.getElementById("adm-ch-color")?.value || "#38bdf8";
+
+        if (!title || !url) {
+          alert("Please enter both a Channel Title and a Link URL.");
+          return;
+        }
+
+        if (!adminConfig.channels) adminConfig.channels = [];
+        adminConfig.channels.push({
+          id: "ch_" + Date.now(),
+          title,
+          subtitle,
+          url,
+          icon,
+          color,
+          enabled: true
+        });
+
+        // Reset inputs
+        const tInp = document.getElementById("adm-ch-title");
+        const sInp = document.getElementById("adm-ch-subtitle");
+        const uInp = document.getElementById("adm-ch-url");
+        if (tInp) tInp.value = "";
+        if (sInp) sInp.value = "";
+        if (uInp) uInp.value = "";
+        if (channelFormWrap) channelFormWrap.style.display = "none";
+
+        renderChannelsAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+      });
+    }
+
     // Click on modal backdrop to close
     const modalEl = document.getElementById("admin-control-modal");
     if (modalEl) {
@@ -1204,6 +1351,7 @@
     // Skills & Experience sublists
     renderSkillsAdminList();
     renderExperienceAdminList();
+    renderChannelsAdminList();
   }
 
   function setVal(id, val) {
@@ -1569,6 +1717,91 @@
         const idx = parseInt(btn.dataset.idx);
         adminConfig.experiences.splice(idx, 1);
         renderExperienceAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+      });
+    });
+  }
+
+  // 9.1 Render Direct Channels in Admin (YouTube, TikTok, Links)
+  function renderChannelsAdminList() {
+    const container = document.getElementById("admin-channels-list-container");
+    const counter = document.getElementById("admin-channel-counter");
+    if (!container) return;
+
+    if (!adminConfig.channels) adminConfig.channels = [];
+    const channels = adminConfig.channels;
+    if (counter) counter.textContent = channels.length;
+
+    if (channels.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px; color:var(--text-muted); background:rgba(255,255,255,0.02); border-radius:12px; border:1px dashed rgba(255,255,255,0.1);">
+          <i class="fas fa-share-alt" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.4;"></i>
+          No custom channels added yet. Click <strong>"Add New Channel"</strong> above to add your YouTube, TikTok, or other links.
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = "";
+    channels.forEach((ch, idx) => {
+      const card = document.createElement("div");
+      card.className = "admin-subrow glass-panel";
+      card.style.display = "flex";
+      card.style.alignItems = "center";
+      card.style.justifyContent = "space-between";
+      card.style.gap = "12px";
+      card.style.padding = "14px";
+      card.style.borderRadius = "12px";
+      card.style.background = "rgba(15, 23, 42, 0.6)";
+      card.style.border = "1px solid rgba(255,255,255,0.08)";
+
+      const color = ch.color || "#38bdf8";
+      const icon = ch.icon || "fas fa-link";
+
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+          <div style="width:42px; height:42px; border-radius:10px; background:${color}22; color:${color}; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
+            <i class="${icon}"></i>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:700; color:#fff; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ch.title}</div>
+            <div style="font-size:0.8rem; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ch.subtitle || ch.url}</div>
+            <a href="${ch.url}" target="_blank" style="font-size:0.75rem; color:var(--color-cyan); text-decoration:none; display:inline-flex; align-items:center; gap:4px; margin-top:2px;">
+              ${ch.url} <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+            </a>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+          <label class="admin-switch" title="Toggle Channel Visibility">
+            <input type="checkbox" class="ch-toggle-input" data-idx="${idx}" ${ch.enabled !== false ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+          <button type="button" class="btn btn-secondary btn-sm ch-del-btn" data-idx="${idx}" style="color:#f87171; border-color:rgba(239,68,68,0.3); padding:8px 12px;" title="Delete Channel">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    container.querySelectorAll(".ch-toggle-input").forEach(toggle => {
+      toggle.addEventListener("change", (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        if (adminConfig.channels[idx]) {
+          adminConfig.channels[idx].enabled = e.target.checked;
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
+      });
+    });
+
+    container.querySelectorAll(".ch-del-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.idx);
+        adminConfig.channels.splice(idx, 1);
+        renderChannelsAdminList();
         saveActiveConfig(adminConfig);
         if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
