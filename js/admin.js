@@ -133,6 +133,9 @@
       }
     });
     panes.forEach(p => p.classList.toggle("active", p.id === tabId));
+    if (tabId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
+      loadAndRenderAdminInquiries();
+    }
   };
 
   // 3. Inject Admin Panel Modal DOM into Page
@@ -186,6 +189,9 @@
             </button>
             <button type="button" class="admin-tab-btn" data-tab="tab-channels">
               <i class="fas fa-share-alt"></i> Direct Channels (<span id="admin-channel-counter">2</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" data-tab="tab-inquiries">
+              <i class="fas fa-inbox"></i> Inquiries (<span id="admin-inquiries-counter">0</span>)
             </button>
             <button type="button" class="admin-tab-btn" data-tab="tab-backup">
               <i class="fas fa-database"></i> Backup &amp; Reset
@@ -921,6 +927,26 @@
             <div id="admin-channels-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
           </div>
 
+          <!-- TAB: INQUIRIES & LEADS -->
+          <div class="admin-tab-pane" id="tab-inquiries">
+            <div class="admin-pane-intro">
+              <h3 style="color:var(--color-cyan); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-inbox"></i> Project Inquiries &amp; Client Leads
+              </h3>
+              <p>Visitors ki taraf se aane wali tamam inquiries yahan live save hoti hain aur sath aapke verified email <code>mirzasubhanali449@gmail.com</code> par notification aati hai. Client ke Phone number ke samne <strong>"Chat on WhatsApp"</strong> button daba kar foran direct unse WhatsApp par chat shuru karein.</p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h4 style="color:#fff; margin:0;"><i class="fas fa-clipboard-list"></i> Received Inquiries (<span id="admin-inquiries-title-count">0</span>)</h4>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-inquiries" onclick="loadAndRenderAdminInquiries()">
+                <i class="fas fa-sync-alt"></i> Refresh Inbox
+              </button>
+            </div>
+
+            <!-- Inquiries List Container -->
+            <div id="admin-inquiries-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+
         </div>
 
         <!-- Sticky Footer -->
@@ -985,6 +1011,9 @@
         const targetId = tab.dataset.tab;
         const targetPane = document.getElementById(targetId);
         if (targetPane) targetPane.classList.add("active");
+        if (targetId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
+          loadAndRenderAdminInquiries();
+        }
       });
     });
 
@@ -1352,6 +1381,9 @@
     renderSkillsAdminList();
     renderExperienceAdminList();
     renderChannelsAdminList();
+    if (typeof loadAndRenderAdminInquiries === "function") {
+      loadAndRenderAdminInquiries();
+    }
   }
 
   function setVal(id, val) {
@@ -1807,6 +1839,124 @@
       });
     });
   }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // 9.2 Render Inquiries / Leads in Admin Panel
+  window.loadAndRenderAdminInquiries = async function() {
+    const container = document.getElementById("admin-inquiries-list-container");
+    const counter = document.getElementById("admin-inquiries-counter");
+    const titleCount = document.getElementById("admin-inquiries-title-count");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div style="text-align:center; padding:24px; color:var(--text-muted);">
+        <i class="fas fa-spinner fa-spin"></i> Loading inquiries from cloud...
+      </div>
+    `;
+
+    let inquiries = [];
+    if (typeof fetchInquiries === "function") {
+      inquiries = await fetchInquiries();
+    } else {
+      try {
+        const raw = localStorage.getItem("devsphere_inquiries");
+        if (raw) inquiries = JSON.parse(raw);
+      } catch (e) {}
+    }
+
+    if (!Array.isArray(inquiries)) inquiries = [];
+    if (counter) counter.textContent = inquiries.length;
+    if (titleCount) titleCount.textContent = inquiries.length;
+
+    if (inquiries.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:36px 20px; background:rgba(255,255,255,0.02); border-radius:14px; border:1px dashed rgba(255,255,255,0.12);">
+          <i class="fas fa-inbox" style="font-size:2.5rem; color:var(--text-muted); opacity:0.5; margin-bottom:12px; display:block;"></i>
+          <h4 style="color:#fff; margin-bottom:6px;">No Inquiries Yet</h4>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin:0; max-width:480px; margin:0 auto;">
+            Jab bhi koi visitor website par <strong>#contact</strong> section mein form submit karega, uski inquiry foran yahan show hogi aur aapko email par bhi notification aayegi.
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = "";
+    inquiries.forEach((inq, idx) => {
+      const card = document.createElement("div");
+      card.className = "inquiry-card glass-panel";
+      card.style.cssText = "background:rgba(15, 23, 42, 0.75); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:18px;";
+
+      const rawPhone = (inq.phone || inq.email || "").toString();
+      const cleanPhone = rawPhone.replace(/[^0-9]/g, "");
+      const formattedWaPhone = cleanPhone.startsWith("0") ? ("92" + cleanPhone.substring(1)) : (cleanPhone.startsWith("92") ? cleanPhone : ("92" + cleanPhone));
+      const waMsg = encodeURIComponent(`Hi ${inq.name || 'there'}! Thank you for contacting me regarding "${inq.projectType || 'Project Inquiry'}". I would love to discuss this with you.`);
+      const waUrl = `https://wa.me/${formattedWaPhone}?text=${waMsg}`;
+
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <div>
+            <h4 style="color:#fff; margin:0 0 4px 0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-user-circle" style="color:var(--color-cyan);"></i> ${escapeHtml(inq.name || 'Anonymous Client')}
+            </h4>
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+              <i class="far fa-clock"></i> ${escapeHtml(inq.formattedTime || inq.timestamp || 'Recent')}
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            ${cleanPhone ? `
+              <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#25d366; color:#fff; border:none; display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-weight:600;">
+                <i class="fab fa-whatsapp" style="font-size:1.1rem;"></i> Chat on WhatsApp
+              </a>
+            ` : ''}
+            <button type="button" class="btn btn-secondary btn-sm inq-del-btn" data-id="${inq.id || idx}" title="Delete Inquiry" style="color:#f87171;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:12px; font-size:0.9rem;">
+          <div style="background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:8px;">
+            <strong style="color:var(--text-muted); display:block; font-size:0.75rem; text-transform:uppercase;">Phone / Contact:</strong>
+            <span style="color:var(--color-mint); font-family:var(--font-mono); font-size:0.95rem;">${escapeHtml(inq.phone || inq.email || 'N/A')}</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:8px;">
+            <strong style="color:var(--text-muted); display:block; font-size:0.75rem; text-transform:uppercase;">Category:</strong>
+            <span style="color:var(--color-lilac);">${escapeHtml(inq.projectType || 'General Inquiry')}</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.3); border-left:3px solid var(--color-cyan); padding:12px 14px; border-radius:0 8px 8px 0; font-size:0.9rem; color:#e2e8f0; line-height:1.5;">
+          ${(escapeHtml(inq.message || '')).replace(/\n/g, '<br>') || '<em style="color:var(--text-muted);">No message details provided.</em>'}
+        </div>
+      `;
+
+      const delBtn = card.querySelector(".inq-del-btn");
+      if (delBtn) {
+        delBtn.addEventListener("click", async () => {
+          if (confirm("Are you sure you want to remove this inquiry?")) {
+            delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+            delBtn.disabled = true;
+            if (typeof deleteInquiryFromCloud === "function") {
+              await deleteInquiryFromCloud(inq.id || idx);
+            }
+            loadAndRenderAdminInquiries();
+          }
+        });
+      }
+
+      container.appendChild(card);
+    });
+  };
 
   // 10. Save All Admin Changes
   function saveAllAdminChanges(showToastMsg = true) {
