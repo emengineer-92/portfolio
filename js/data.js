@@ -541,3 +541,145 @@ function dispatchLeadNotification(email, entry) {
     }).catch(() => {});
   } catch (err) {}
 }
+
+// Persistent Client Inquiries Cloud & Local Store
+const STORAGE_INQUIRIES_KEY = "devsphere_inquiries";
+
+async function fetchInquiries() {
+  let list = [];
+  try {
+    const rawLocal = localStorage.getItem(STORAGE_INQUIRIES_KEY);
+    if (rawLocal) list = JSON.parse(rawLocal);
+  } catch (e) {}
+
+  // 1. If running on local node server, fetch from API
+  if (typeof fetch !== "undefined") {
+    try {
+      const res = await fetch("/api/inquiries");
+      if (res.ok) {
+        const apiList = await res.json();
+        if (Array.isArray(apiList) && apiList.length) {
+          localStorage.setItem(STORAGE_INQUIRIES_KEY, JSON.stringify(apiList));
+          return apiList;
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 2. Fetch from GitHub data/inquiries.json
+  if (typeof fetch !== "undefined" && GITHUB_SYNC.token) {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/inquiries.json?t=${Date.now()}`, {
+        headers: { "Authorization": "token " + GITHUB_SYNC.token }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const contentStr = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+        const parsed = JSON.parse(contentStr);
+        if (Array.isArray(parsed)) {
+          list = parsed;
+          localStorage.setItem(STORAGE_INQUIRIES_KEY, JSON.stringify(list));
+          return list;
+        }
+      }
+    } catch (e) {}
+  }
+
+  return list;
+}
+
+async function saveInquiryToCloud(inquiryObj) {
+  try {
+    // 1. Save to local storage
+    let list = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_INQUIRIES_KEY);
+      if (raw) list = JSON.parse(raw);
+    } catch (e) {}
+    if (!list.some(item => item.id === inquiryObj.id)) {
+      list.unshift(inquiryObj);
+    }
+    localStorage.setItem(STORAGE_INQUIRIES_KEY, JSON.stringify(list));
+
+    // 2. Push to GitHub data/inquiries.json
+    if (typeof fetch !== "undefined" && GITHUB_SYNC.token) {
+      const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/inquiries.json`;
+      const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
+        headers: { "Authorization": "token " + GITHUB_SYNC.token }
+      });
+      let sha = null;
+      let remoteList = [];
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        sha = fileData.sha;
+        try {
+          remoteList = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+        } catch (e) {}
+      }
+      if (!Array.isArray(remoteList)) remoteList = [];
+      if (!remoteList.some(item => item.id === inquiryObj.id)) {
+        remoteList.unshift(inquiryObj);
+      }
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteList, null, 2))));
+      const body = {
+        message: "💼 New Client Inquiry from " + (inquiryObj.name || "Client"),
+        content: b64
+      };
+      if (sha) body.sha = sha;
+      await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": "token " + GITHUB_SYNC.token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+    }
+  } catch (e) {
+    console.warn("Error saving inquiry to cloud:", e);
+  }
+}
+
+async function deleteInquiryFromCloud(inquiryId) {
+  try {
+    let list = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_INQUIRIES_KEY);
+      if (raw) list = JSON.parse(raw);
+    } catch (e) {}
+    list = list.filter(item => item.id !== inquiryId);
+    localStorage.setItem(STORAGE_INQUIRIES_KEY, JSON.stringify(list));
+
+    if (typeof fetch !== "undefined" && GITHUB_SYNC.token) {
+      const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/inquiries.json`;
+      const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
+        headers: { "Authorization": "token " + GITHUB_SYNC.token }
+      });
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        const sha = fileData.sha;
+        let remoteList = [];
+        try {
+          remoteList = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+        } catch (e) {}
+        remoteList = remoteList.filter(item => item.id !== inquiryId);
+        const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteList, null, 2))));
+        await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + GITHUB_SYNC.token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "🗑️ Delete Inquiry " + inquiryId,
+            content: b64,
+            sha
+          })
+        });
+      }
+    }
+  } catch (e) {
+    console.warn("Error deleting inquiry from cloud:", e);
+  }
+}
+
