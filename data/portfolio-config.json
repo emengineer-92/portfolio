@@ -150,8 +150,8 @@
     {
       "id": "proj-5",
       "title": "Hyperion 3D — Procedural CGI Animation & Modeling",
-      "category": "3D Animation & CGI Design (2023–2024)",
-      "description": "Comprehensive 3D animation simulation showcasing dynamic procedural physics, volumetric lighting nodes, character modeling, and photorealistic asset rendering.",
+      "category": "",
+      "description": "theek ho jai",
       "image": "assets/project_3d.jpg",
       "tags": [
         "Blender 3D",
@@ -263,5 +263,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793083587953
+  "updatedAt": 1793083678266
 }
