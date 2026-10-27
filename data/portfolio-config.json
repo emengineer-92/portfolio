@@ -14,10 +14,15 @@
   "profile": {
     "name": "EM.Subhan ali",
     "brand": "DevSphere",
-    "tagline": "i am a boy.",
+    "icon": "fas fa-code",
+    "tagline": "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
     "taglines": [
-      "i am a boy.",
-      "my name is subhan"
+      "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
+      "Passionate Robotics & Embedded Hardware Innovator",
+      "Intermediate in Computer Science (ICS Graduate)",
+      "Admitted in BS Computer Science (BS CS 2026)",
+      "3D Animation, Video Editing & Adobe Photoshop Specialist",
+      "Tech Entrepreneur • Designing Scalable Business Ventures"
     ],
     "heroBio": "Pakistani Full-Stack Developer, Creative Media Specialist, and Aspiring Robotics Engineer. Proven journey from Computer Foundations & Office Apps (2023–2024), Adobe Photoshop & Video Editing, 3D CGI Animation, and Intermediate in Computer Science (ICS), advancing into Full-Stack Web Architecture (2025–2026) and upcoming BS Computer Science program. Passionately engineering robotics hardware and innovative tech business ventures.",
     "avatar": "assets/avatar.jpg?v=2",
@@ -25,8 +30,8 @@
     "location": "Pakistan 🇵🇰 (Global & Remote)",
     "statusText": "Enrolling in BS CS (Late 2026) • Available for Full-Stack & Robotics",
     "experienceYears": "4+",
-    "completedProjects": "3+",
-    "codeCommits": "8.4",
+    "completedProjects": "35+",
+    "codeCommits": "8.4k",
     "clientSatisfaction": "100%"
   },
   "theme": {
@@ -238,5 +243,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793076155516
+  "updatedAt": 1793072901719
 }
