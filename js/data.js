@@ -25,6 +25,7 @@ const DEFAULT_CONFIG = {
   profile: {
     name: "EM.Subhan ali",
     brand: "DevSphere",
+    icon: "fas fa-code",
     tagline: "Full-Stack Developer, Creative Technologist & Robotics Innovator",
     taglines: [
       "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
@@ -353,15 +354,19 @@ function checkAndApplyCloudUpdates() {
     const localTime = (localCfg && localCfg.updatedAt) ? Number(localCfg.updatedAt) : 0;
     const remoteTime = (remoteCfg && remoteCfg.updatedAt) ? Number(remoteCfg.updatedAt) : 0;
 
-    // If this device has NO config yet, OR if the cloud has a strictly NEWER admin update:
-    if (!localSaved || remoteTime > localTime) {
+    const isDifferent = !localSaved || !localCfg || (remoteTime > localTime) ||
+      (JSON.stringify(localCfg.profile) !== JSON.stringify(remoteCfg.profile)) ||
+      (JSON.stringify(localCfg.sections) !== JSON.stringify(remoteCfg.sections)) ||
+      (JSON.stringify(localCfg.projects) !== JSON.stringify(remoteCfg.projects));
+
+    if (isDifferent) {
       const merged = deepMergeConfig(DEFAULT_CONFIG, remoteCfg);
-      merged.updatedAt = remoteTime;
+      merged.updatedAt = remoteTime || Date.now();
       localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
       if (typeof window !== "undefined" && window.refreshPortfolioFromConfig) {
         window.refreshPortfolioFromConfig(merged);
       }
-      console.log("☁️ Updated portfolio from Admin Cloud broadcast (Mobile B synced).");
+      console.log("☁️ Successfully synced updates from Cloud across mobiles.");
     }
   }
 
@@ -373,8 +378,12 @@ function checkAndApplyCloudUpdates() {
     })
     .then(cfg => processIncoming(cfg))
     .catch(() => {
-      // Priority 2: Fetch directly from GitHub Contents API (Zero-cache, instant real-time data)
-      fetch(`https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/${GITHUB_SYNC.filePath}${cacheBuster}`)
+      // Priority 2: Fetch directly from GitHub Contents API WITH Authorization token (5,000 req/hr, zero cache delay)
+      const headers = {};
+      if (GITHUB_SYNC.token) {
+        headers["Authorization"] = "token " + GITHUB_SYNC.token;
+      }
+      fetch(`https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/${GITHUB_SYNC.filePath}${cacheBuster}`, { headers })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
           if (data && data.content) {
@@ -385,7 +394,7 @@ function checkAndApplyCloudUpdates() {
               return;
             } catch (e) {}
           }
-          throw new Error("API rate-limit or no content");
+          throw new Error("No content or parse error");
         })
         .catch(() => {
           // Priority 3: Fetch raw file from GitHub
