@@ -27,15 +27,6 @@
     "date": "2026-10-02"
   },
   {
-    "id": "rev-1",
-    "author": "Marcus Vance",
-    "title": "CTO, Horizon Spatial Tech",
-    "quote": "EM.Subhan ali's full-stack architecture is exceptional. He delivered high-performance microservices, seamless real-time WebSocket pipelines, and a flawless interactive frontend ahead of schedule.",
-    "rating": 5,
-    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-    "date": "2026-09-15"
-  },
-  {
     "id": "rev-3",
     "author": "Engr. Tariq Mehmood",
     "title": "Senior Tech Consultant & Academic Advisor",
