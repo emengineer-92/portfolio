@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EM.Subhan ali | Pakistani Full-Stack Developer • Robotics Innovator • BS CS Candidate</title>
+  <meta name="description" content="Portfolio of EM.Subhan ali (DevSphere). Pakistani Full-Stack Developer (2025–2026), Passionate Robotics Innovator, ICS Graduate, and upcoming BS Computer Science student with expertise in 3D Animation and Creative Digital Media.">
+  <meta name="keywords" content="EM.Subhan ali, Pakistani Developer, Full-Stack Developer, Robotics, ICS, BS CS, React, Node.js, 3D Animation, Video Editing, Photoshop, Tech Business Ideas">
+  <meta name="author" content="EM.Subhan ali">
+  <meta name="theme-color" content="#07090f">
+
+  <!-- OpenGraph Meta Tags -->
+  <meta property="og:title" content="EM.Subhan ali | Full-Stack Developer • Robotics Innovator • BS CS Candidate">
+  <meta property="og:description" content="Pakistani Full-Stack Developer, Robotics Enthusiast, ICS Graduate, and BS CS Candidate with proven journey across Full-Stack Web, 3D Animation, and Digital Media.">
+  <meta property="og:image" content="assets/avatar.jpg">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheet with Cache-Bust -->
+  <link rel="stylesheet" href="css/style.css?v=70">
+
+  <style>
+    /* Clean mouse pointer everywhere with ZERO follower circles */
+    html, body {
+      cursor: default !important;
+    }
+    a, button, input, select, textarea, [role="button"], .btn, .nav-link, .nav-brand, .tag, .project-card, .timeline-card {
+      cursor: pointer !important;
+    }
+    #fluid-cursor-ring, #fluid-cursor-dot, .fluid-cursor-ring, .fluid-cursor-dot, 
+    .cursor-follower, .custom-cursor, .cursor-ring, .cursor-dot {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Scroll Progress Indicator (Gradient Neon Beam) -->
+  <div id="top-scroll-progress" class="top-scroll-progress-bar"></div>
+
+  <!-- Background WebGL GPU Fluid Simulation Canvas (aaabadcode.com style) -->
+  <canvas id="particle-canvas"></canvas>
+  <div class="ambient-mesh"></div>
+
+  <!-- Main Site Wrapper -->
+  <div class="site-wrapper">
+
+    <!-- ==========================================
+         FLOATING NAVBAR
+         ========================================== -->
+    <header class="navbar" id="site-navbar">
+      <a href="#home" class="nav-brand" id="brand-logo-link">
+        <div class="brand-icon-wrap" id="brand-icon-trigger" title="DevSphere" onclick="handleBrandIconClick(event)">
+          <i class="fas fa-code"></i>
+        </div>
+        <span><span class="dyn-profile-name">EM.Subhan ali</span> <span class="gradient-accent dyn-profile-brand">DevSphere</span></span>
+      </a>
+
+      <!-- Horizontal 3-Dot Expandable Navigation inside Header Banner -->
+      <div class="nav-horizontal-wrapper">
+        <div class="nav-horizontal-links" id="nav-horizontal-links">
+          <ul class="nav-links" id="nav-links">
+            <li><a href="#projects" class="nav-link active">Projects</a></li>
+            <li><a href="#skills" class="nav-link">Expertise</a></li>
+            <li><a href="#terminal" class="nav-link">Terminal</a></li>
+            <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+          </ul>
+
+          <button id="visitor-badge-btn" class="visitor-badge" onclick="openVisitorModal()" title="Leave your email to connect with EM.Subhan ali">
+            <span class="dot"></span>Leave Email
+          </button>
+
+        </div>
+
+        <!-- 3-Dot Toggle Button right in the horizontal banner -->
+        <button id="nav-dots-btn" class="nav-dots-btn" aria-label="Toggle Navigation Buttons" title="Toggle Menu Buttons" onclick="toggleHorizontalNav(event)">
+          <i class="fas fa-ellipsis-v" id="nav-dots-icon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ==========================================
+           HERO SECTION
+           ========================================== -->
+      <section id="home" class="hero-section">
+        <div class="hero-content">
+          
+          <h1 class="hero-title">
+            <span class="gradient-text dyn-profile-name">EM.Subhan ali</span><br>
+            <span class="hero-tagline-wrapper">
+              <span id="dyn-hero-tagline">Senior Full-Stack Developer &amp; Software Architect</span>
+            </span>
+          </h1>
+
+          <p class="hero-subtitle" id="dyn-hero-bio">
+            Architecting and engineering high-performance modern full-stack web applications, scalable cloud backends, and intuitive interactive user interfaces. Specialist in End-to-End Web Development, React, Node.js, Next.js, REST & GraphQL APIs, and Distributed Cloud Systems.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#projects" class="btn btn-primary">
+              <i class="fas fa-rocket"></i> Explore Projects
+            </a>
+            <a href="#terminal" class="btn btn-secondary">
+              <i class="fas fa-terminal"></i> Terminal CLI
+            </a>
+            <a href="#contact" class="btn btn-secondary">
+              <i class="fas fa-paper-plane"></i> Hire Me
+            </a>
+          </div>
+
+          <!-- Live Metrics Grid -->
+          <div class="hero-metrics-grid">
+            <div class="metric-item">
+              <span class="metric-number" id="stat-exp">4+</span>
+              <span class="metric-label">Years Active Journey</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-number" id="stat-projects">35+</span>
+              <span class="metric-label">Completed Works</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-number" id="stat-commits">8.4k</span>
+              <span class="metric-label">Code & Asset Commits</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-number" id="stat-satisfaction">100%</span>
+              <span class="metric-label">Dedication & Quality</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Luxury Hologram Avatar Card -->
+        <div class="hero-visual">
+          <div class="avatar-hologram-card tilt-card" id="avatar-card">
+            <div class="avatar-img-wrap">
+              <img id="dyn-hero-avatar" src="assets/avatar.jpg?v=2" alt="EM.Subhan ali - Pakistani Full-Stack Developer & Robotics Innovator" fetchpriority="high" decoding="async">
+              <div class="avatar-glow-overlay"></div>
+            </div>
+
+            <!-- Floating Tech Badges for all disciplines -->
+            <div class="floating-badge badge-2">
+              <i class="fas fa-robot" style="color: #38bdf8; font-size: 1.2rem;"></i>
+              <span>Robotics &amp; Full-Stack</span>
+            </div>
+            <div class="floating-badge badge-3">
+              <i class="fas fa-graduation-cap" style="color: #4ade80; font-size: 1.2rem;"></i>
+              <span>ICS Graduate • BS CS 2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           PROJECTS SHOWCASE SECTION
+           ========================================== -->
+      <section id="projects">
+        <div class="section-header">
+          <span class="section-tag">Portfolio Showcase</span>
+          <h2>Featured <span class="gradient-accent">Full-Stack, Robotics &amp; Creative</span> Engineering</h2>
+          <p class="section-subtitle">
+            Realized work spanning full-stack web platforms (2025–2026), autonomous robotics hardware, scalable tech business models, 3D CGI animation, and creative digital media editing (2023–2024).
+          </p>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SKILLS & EXPERTISE MATRIX
+           ========================================== -->
+      <section id="skills">
+        <div class="section-header">
+          <span class="section-tag">Core Technical Arsenal</span>
+          <h2>Full-Stack Mastery & <span class="gradient-accent">Engineering Depth</span></h2>
+          <p class="section-subtitle">
+            End-to-end capabilities spanning Frontend Architecture, Backend Engineering, Cloud Infrastructure, Database Modeling, and High-Performance APIs.
+          </p>
+        </div>
+
+        <div class="skills-container" id="skills-container">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           INTERACTIVE DEV TERMINAL (SUBHAN-OS)
+           ========================================== -->
+      <section id="terminal">
+        <div class="section-header">
+          <span class="section-tag">Interactive Environment</span>
+          <h2>SubhanOS <span class="gradient-accent">Live Cloud Terminal</span></h2>
+          <p class="section-subtitle">
+            Interactive developer console into EM.Subhan ali's workspace. Test commands, inspect telemetry, or trigger engineering workflows.
+          </p>
+        </div>
+
+        <div class="terminal-wrapper glass-panel">
+          <div class="terminal-header">
+            <div class="terminal-controls">
+              <span class="control-dot red"></span>
+              <span class="control-dot yellow"></span>
+              <span class="control-dot green"></span>
+            </div>
+            <div class="terminal-title">visitor@subhan-os:~ (bash v5.2)</div>
+            <div class="terminal-status"><i class="fas fa-circle" style="font-size: 8px;"></i> Live Edge Node</div>
+          </div>
+
+          <div class="terminal-body" id="terminal-output-body">
+            <div class="terminal-line" style="color: var(--color-cyan);">
+              SubhanOS Multi-Disciplinary Console — Pakistan 🇵🇰 [Version 3.4.0-CS]
+            </div>
+            <div class="terminal-line" style="color: var(--text-muted);">
+              Type '<span style="color:var(--color-gold);">help</span>' to inspect commands, or tap any quick action below.
+            </div>
+            <div class="terminal-line">
+              <span class="terminal-prompt">visitor@subhan-os:~$</span> <span class="terminal-cmd-highlight">welcome</span>
+            </div>
+            <div class="terminal-line" style="color:var(--color-mint);">
+              System initialized: Full-Stack (2025–2026), Robotics Hardware, ICS Graduate, BS CS 2026, 3D Animation &amp; Video/Photoshop.
+            </div>
+          </div>
+
+          <div class="terminal-quick-cmds">
+            <span style="font-size:0.75rem; color:var(--text-dim); margin-right:6px; align-self:center;">Quick Run:</span>
+            <button class="cmd-badge" data-cmd="help">help</button>
+            <button class="cmd-badge" data-cmd="skills">skills</button>
+            <button class="cmd-badge" data-cmd="projects">projects</button>
+            <button class="cmd-badge" data-cmd="whoami">whoami</button>
+            <button class="cmd-badge" data-cmd="uptime">uptime</button>
+            <button class="cmd-badge" data-cmd="matrix">matrix</button>
+            <button class="cmd-badge" data-cmd="hire">hire</button>
+            <button class="cmd-badge" data-cmd="guestbook">guestbook</button>
+          </div>
+
+          <div class="terminal-input-row" style="padding: 14px 20px; background: #060912; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+            <span class="terminal-prompt" style="font-size: 0.95rem;">visitor@subhan-os:~$</span>
+            <input type="text" id="terminal-cmd-input" class="terminal-input" placeholder="Type a command (e.g. help, skills, guestbook)..." autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           EXPERIENCE & TIMELINE (CHRONOLOGICAL MILESTONES)
+           ========================================== -->
+      <section id="experience">
+        <div class="section-header">
+          <span class="section-tag">Career Milestones</span>
+          <h2>Academic Milestones &amp; <span class="gradient-accent">Technical Career Timeline</span></h2>
+          <p class="section-subtitle">
+            Chronological progression from Computer Fundamentals &amp; Media Editing (2023–2024), 3D Animation, and Intermediate in Computer Science (ICS), into Full-Stack Web Development (2025–2026), upcoming BS Computer Science degree, and visionary Tech Business Ventures &amp; Robotics.
+          </p>
+        </div>
+
+        <div class="timeline-showcase-wrap" id="timeline-container">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TESTIMONIALS / REVIEWS SECTION
+           ========================================== -->
+      <section id="testimonials">
+        <div class="section-header">
+          <span class="section-tag">Client Acclaim & Feedback</span>
+          <h2>Client Reviews & <span class="gradient-accent">Public Ratings</span></h2>
+          <p class="section-subtitle">
+            Verified feedback from clients and collaborators worldwide. Leave your own review to share your experience with EM.Subhan ali.
+          </p>
+          <button class="btn btn-primary" onclick="openReviewModal()" style="margin-top: 10px;">
+            <i class="fas fa-pen-nib"></i> Leave a Review
+          </button>
+        </div>
+
+        <div class="reviews-compact-list" id="testimonials-container">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           CONTACT & INQUIRY SECTION
+           ========================================== -->
+      <section id="contact">
+        <div class="section-header">
+          <span class="section-tag">Direct Line</span>
+          <h2>Let’s Build Something <span class="gradient-accent">Remarkable</span></h2>
+          <p class="section-subtitle">
+            Have a full-stack platform, modern web app, cloud architecture, or software engineering project in mind? Initiate transmission.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-info-card glass-panel">
+            <h3>Direct Channels</h3>
+            <p>
+              Available for high-impact contracts, technical leadership, and full-stack software development.
+            </p>
+
+            <a id="dyn-contact-email-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=mirzasubhanali449@gmail.com&su=Project%20Inquiry%20-%20DevSphere" target="_blank" rel="noopener noreferrer" class="contact-direct-link" title="Compose email directly on Gmail">
+              <div class="contact-icon-box" style="background: rgba(234, 67, 53, 0.15); color: #ea4335;"><i class="fas fa-envelope"></i></div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-dim);">Official Email Inquiry</div>
+                <strong style="color:#fff; display:flex; align-items:center; gap:6px;">Send Message via Gmail <i class="fas fa-arrow-right" style="font-size:0.75rem; color:var(--color-cyan);"></i></strong>
+              </div>
+            </a>
+
+            <a id="dyn-contact-wa-link" href="https://wa.me/923446266246?text=Hi%20Subhan,%20I%20would%20like%20to%20connect%20regarding%20a%20project." target="_blank" rel="noopener noreferrer" class="contact-direct-link" title="Chat directly on WhatsApp">
+              <div class="contact-icon-box" style="background: rgba(37, 211, 102, 0.15); color: #25D366;"><i class="fab fa-whatsapp"></i></div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-dim);">Instant Messaging & Chat</div>
+                <strong style="color:var(--color-mint); display:flex; align-items:center; gap:6px;">Chat on WhatsApp <i class="fas fa-arrow-right" style="font-size:0.75rem; color:var(--color-mint);"></i></strong>
+              </div>
+            </a>
+
+            <div class="contact-direct-link">
+              <div class="contact-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-dim);">Location & Timezone</div>
+                <strong id="dyn-contact-location" style="color:#fff;">Pakistan 🇵🇰 (Available for Global & Remote Work)</strong>
+              </div>
+            </div>
+
+            <div style="margin-top:auto; padding:16px; background:rgba(56, 189, 248, 0.05); border:1px solid rgba(56, 189, 248, 0.15); border-radius:12px;">
+              <div style="font-size:0.85rem; color:var(--color-cyan); font-weight:600;"><i class="fas fa-bolt"></i> Guaranteed Response</div>
+              <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Average first contact turnaround is under 2 hours.</div>
+            </div>
+          </div>
+
+          <form id="contact-inquiry-form" class="contact-form glass-panel">
+            <h3 style="margin-bottom:8px;">Send Project Inquiry</h3>
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Your Full Name</label>
+              <input type="text" id="contact-name" class="form-control" placeholder="e.g. Alexander Vance" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-email">Your Work Email</label>
+              <input type="email" id="contact-email" class="form-control" placeholder="name@company.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-type">Discipline / Project Category</label>
+              <select id="contact-type" class="form-control" style="background:#0a0e17;">
+                <option value="3D Animation & CGI Motion Design">3D Animation & CGI Motion Design</option>
+                <option value="Full-Stack Web Development (React / Next.js / Node)">Full-Stack Web Development (React / Next.js / Node)</option>
+                <option value="Mobile Apps Development (iOS & Android)">Mobile Apps Development (iOS & Android)</option>
+                <option value="Cinematic Video Editing & VFX Post-Production">Cinematic Video Editing & VFX Post-Production</option>
+                <option value="Graphic Designing & Luxury UI/UX Design">Graphic Designing & Luxury UI/UX Design</option>
+                <option value="Embedded Electronics, Robotics & IoT Hardware">Embedded Electronics, Robotics & IoT Hardware</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-message">Project Overview & Objectives</label>
+              <textarea id="contact-message" class="form-control" placeholder="Briefly describe your vision, timeline, and expectations..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+              <i class="fas fa-paper-plane"></i> Transmit Inquiry to Subhan
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==========================================
+         FOOTER
+         ========================================== -->
+    <footer>
+      <div class="footer-content">
+        <div class="nav-brand">
+          <div class="brand-icon-wrap"><i class="fas fa-cube"></i></div>
+          <span><span class="dyn-profile-name">Subhan</span> <span class="gradient-accent dyn-profile-brand">DevSphere</span></span>
+        </div>
+
+        <p style="font-size: 0.88rem; max-width: 500px;">
+          3D Animation • Web & Apps • Video Editing • Graphic Design • Electronics & IoT
+        </p>
+
+        <div class="footer-socials">
+          <a href="https://github.com" target="_blank" class="social-circle" title="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://linkedin.com" target="_blank" class="social-circle" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mirzasubhanali449@gmail.com&su=Project%20Inquiry" target="_blank" rel="noopener noreferrer" class="social-circle" title="Compose on Gmail"><i class="fas fa-envelope"></i></a>
+          <a href="https://wa.me/923446266246" target="_blank" rel="noopener noreferrer" class="social-circle" title="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--text-dim);">
+          © 2026 EM.Subhan ali DevSphere. All rights reserved. • 
+          <a href="/database" target="_blank" style="color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <i class="fas fa-database"></i> SQLite Database Manager
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==========================================
+       VISITOR WELCOME & ACCESS MODAL (AUTO POPUP)
+       ========================================== -->
+  <div class="modal-overlay" id="visitor-gate-modal">
+    <div class="visitor-modal-box" style="text-align: center; max-width: 500px;">
+      <button class="modal-close-btn" onclick="submitVisitorAccess(false)" aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="modal-icon-badge" style="margin: 0 auto 18px auto; background: linear-gradient(135deg, #a855f7, #38bdf8); box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);">
+        <i class="fas fa-hand-sparkles" style="color: #fff; font-size: 1.5rem;"></i>
+      </div>
+
+      <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: #fff; font-weight: 700;">
+        Thank You For Visiting <span style="background: linear-gradient(135deg, #38bdf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">EM.Subhan Ali</span>
+      </h3>
+      <p style="font-size: 0.94rem; margin-bottom: 22px; color: #94a3b8; line-height: 1.6;">
+        Kia aap apni email enter kar ke explore karna chahte hain ya direct guest ke tor par dekhna chahte hain?
+      </p>
+
+      <form id="visitor-gate-form" onsubmit="event.preventDefault(); submitVisitorAccess(true);">
+        <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+          <label class="form-label" for="visitor-email-input" style="font-size: 0.85rem; color: #cbd5e1; display:flex; align-items:center; gap:6px; margin-bottom: 8px;">
+            <i class="fas fa-envelope" style="color: #c084fc;"></i> Enter Your Email <span style="font-size: 0.75rem; color: #64748b;">(Optional)</span>
+          </label>
+          <input type="email" id="visitor-email-input" class="form-control" placeholder="name@company.com" autocomplete="email" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(192, 132, 252, 0.35); color: #fff; padding: 12px 16px; border-radius: 12px;">
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary" onclick="submitVisitorAccess(true)" style="flex: 1; min-width: 170px; padding: 12px 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-check-circle"></i> Allow &amp; Enter
+          </button>
+          <button type="button" class="btn" onclick="submitVisitorAccess(false)" style="flex: 1; min-width: 170px; padding: 12px 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #cbd5e1; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-arrow-right"></i> Reject / Guest
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       REVIEW SUBMISSION MODAL
+       ========================================== -->
+  <div class="modal-overlay" id="review-submission-modal">
+    <div class="visitor-modal-box" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeReviewModal()" aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="modal-icon-badge">
+        <i class="fas fa-star" style="color: #ffd700;"></i>
+      </div>
+
+      <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Leave a Public Review</h3>
+      <p style="font-size: 0.9rem; margin-bottom: 20px; color: var(--text-muted);">
+        Your review will be saved persistently for all future visitors to see.
+      </p>
+
+      <form id="public-review-form">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="review-author">Your Name *</label>
+          <input type="text" id="review-author" class="form-control" placeholder="e.g. Alex Morgan" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="review-title">Your Role / Company</label>
+          <input type="text" id="review-title" class="form-control" placeholder="e.g. Founder & CEO, TechVentures" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="review-rating">Rating</label>
+          <select id="review-rating" class="form-control" style="background: var(--bg-input); color: #fff;">
+            <option value="5">⭐⭐⭐⭐⭐ (5 / 5 - Exceptional)</option>
+            <option value="4">⭐⭐⭐⭐ (4 / 5 - Great)</option>
+            <option value="3">⭐⭐⭐ (3 / 5 - Good)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="review-quote">Your Review & Feedback *</label>
+          <textarea id="review-quote" class="form-control" rows="4" placeholder="Share your experience working with EM.Subhan ali on full-stack architecture, software delivery, and design..." required></textarea>
+        </div>
+
+        <button type="submit" id="review-submit-btn" class="btn btn-primary" style="width: 100%;">
+          <i class="fas fa-paper-plane"></i> Publish & Save Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts with Cache-Busters -->
+  <script src="js/data.js?v=70"></script>
+  <script src="js/visitor-capture.js?v=70"></script>
+  <script src="js/fluid-canvas.js?v=70"></script>
+  <script src="js/app.js?v=70"></script>
+  <script src="js/admin.js?v=70"></script>
+</body>
+</html>
