@@ -139,11 +139,6 @@ body {
 .site-wrapper {
   position: relative;
   z-index: 1;
-  contain: layout;
-}
-
-.section {
-  contain: content;
 }
 
 /* Typography Headings */
@@ -275,22 +270,22 @@ a {
    NAVBAR
    ========================================================================== */
 .navbar {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   width: min(92%, 1240px);
   padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(10, 14, 24, 0.82);
+  background: rgba(10, 14, 24, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 50px;
-  z-index: 1000;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 999999 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   transition: var(--transition-smooth);
 }
 
