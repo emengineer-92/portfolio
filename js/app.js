@@ -41,6 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 8. Navigation scrollspy & mobile menu
   setupNavigation();
+
+  // 9. Cross-device Cloud Sync (sync updates made from any other mobile or browser)
+  if (typeof checkAndApplyCloudUpdates === "function") {
+    checkAndApplyCloudUpdates();
+  }
 });
 
 // Real-time Live Refresh for Admin Customizations
@@ -51,6 +56,7 @@ window.refreshPortfolioFromConfig = function(cfg) {
   renderProjectsInPortfolio(cfg);
   renderSkillsInPortfolio(cfg);
   renderExperiencesInPortfolio(cfg);
+  renderTestimonialsInPortfolio(cfg);
   init3DTilt();
 };
 
