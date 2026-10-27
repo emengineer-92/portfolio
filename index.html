@@ -353,8 +353,8 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="contact-phone">Phone Number <span style="color:var(--color-cyan); font-weight:600;">(Sirf 11 Hindso Ka - 11 Digits Only)</span></label>
-              <input type="tel" id="contact-phone" class="form-control" placeholder="03XXXXXXXXX (11 digits)" maxlength="11" pattern="[0-9]{11}" inputmode="numeric" required autocomplete="tel">
+              <label class="form-label" for="contact-phone">Phone Number <span style="color:var(--color-cyan); font-weight:600;">(Must be strictly 11 Digits - Max 11)</span></label>
+              <input type="tel" id="contact-phone" class="form-control" placeholder="03XXXXXXXXX (11 digits only)" maxlength="11" minlength="11" pattern="[0-9]{11}" inputmode="numeric" oninput="if(this.value.length>11)this.value=this.value.slice(0,11); this.value=this.value.replace(/[^0-9]/g,'');" required autocomplete="tel">
               <div id="contact-phone-error" style="display:none; color:#f87171; font-size:0.8rem; margin-top:5px; font-weight:500;">
                 <i class="fas fa-exclamation-circle"></i> Phone number sirf 11 hindso ka hona chahiye (e.g. 03446266246).
               </div>
@@ -507,10 +507,10 @@
   </div>
 
   <!-- Scripts with Cache-Busters -->
-  <script src="js/data.js?v=202"></script>
-  <script src="js/visitor-capture.js?v=202"></script>
-  <script src="js/fluid-canvas.js?v=202"></script>
-  <script src="js/app.js?v=202"></script>
-  <script src="js/admin.js?v=202"></script>
+  <script src="js/data.js?v=203"></script>
+  <script src="js/visitor-capture.js?v=203"></script>
+  <script src="js/fluid-canvas.js?v=203"></script>
+  <script src="js/app.js?v=203"></script>
+  <script src="js/admin.js?v=203"></script>
 </body>
 </html>
