@@ -104,8 +104,11 @@
     }
   };
 
-  // Close Admin Panel
+  // Close Admin Panel (Auto-saves all current changes)
   window.closeAdminPanel = function() {
+    if (typeof saveAllAdminChanges === "function") {
+      saveAllAdminChanges(false);
+    }
     const modal = document.getElementById("admin-control-modal");
     if (modal) {
       modal.classList.remove("active");
@@ -1059,6 +1062,8 @@
           icon: "fas fa-code"
         });
         renderSkillsAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
     }
 
@@ -1075,8 +1080,25 @@
           description: "Milestone description..."
         });
         renderExperienceAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
     }
+
+    // Real-time auto-save for profile text inputs on change/blur
+    const profileFieldIds = [
+      "adm-prof-name", "adm-prof-brand", "adm-prof-bio", "adm-prof-badge", "adm-prof-location",
+      "adm-prof-taglines", "adm-stat-exp", "adm-stat-proj", "adm-stat-commits", "adm-stat-sat",
+      "adm-prof-avatar-url", "adm-soc-email", "adm-soc-wa", "adm-soc-github", "adm-soc-linkedin"
+    ];
+    profileFieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", () => {
+          saveAllAdminChanges(false);
+        });
+      }
+    });
 
     // Click on modal backdrop to close
     const modalEl = document.getElementById("admin-control-modal");
@@ -1383,21 +1405,33 @@
     container.querySelectorAll(".skill-name-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.skills[idx]) adminConfig.skills[idx].name = e.target.value.trim();
+        if (adminConfig.skills[idx]) {
+          adminConfig.skills[idx].name = e.target.value.trim();
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
     container.querySelectorAll(".skill-level-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.skills[idx]) adminConfig.skills[idx].level = Math.max(1, Math.min(100, parseInt(e.target.value) || 90));
+        if (adminConfig.skills[idx]) {
+          adminConfig.skills[idx].level = Math.max(1, Math.min(100, parseInt(e.target.value) || 90));
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
     container.querySelectorAll(".skill-cat-select").forEach(sel => {
       sel.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.skills[idx]) adminConfig.skills[idx].category = e.target.value;
+        if (adminConfig.skills[idx]) {
+          adminConfig.skills[idx].category = e.target.value;
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
@@ -1406,6 +1440,8 @@
         const idx = parseInt(btn.dataset.idx);
         adminConfig.skills.splice(idx, 1);
         renderSkillsAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
     });
   }
@@ -1439,28 +1475,44 @@
     container.querySelectorAll(".exp-year-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.experiences[idx]) adminConfig.experiences[idx].year = e.target.value.trim();
+        if (adminConfig.experiences[idx]) {
+          adminConfig.experiences[idx].year = e.target.value.trim();
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
     container.querySelectorAll(".exp-role-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.experiences[idx]) adminConfig.experiences[idx].role = e.target.value.trim();
+        if (adminConfig.experiences[idx]) {
+          adminConfig.experiences[idx].role = e.target.value.trim();
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
     container.querySelectorAll(".exp-comp-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.experiences[idx]) adminConfig.experiences[idx].company = e.target.value.trim();
+        if (adminConfig.experiences[idx]) {
+          adminConfig.experiences[idx].company = e.target.value.trim();
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
     container.querySelectorAll(".exp-desc-input").forEach(inp => {
       inp.addEventListener("change", (e) => {
         const idx = parseInt(e.target.dataset.idx);
-        if (adminConfig.experiences[idx]) adminConfig.experiences[idx].description = e.target.value.trim();
+        if (adminConfig.experiences[idx]) {
+          adminConfig.experiences[idx].description = e.target.value.trim();
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        }
       });
     });
 
@@ -1469,12 +1521,14 @@
         const idx = parseInt(btn.dataset.idx);
         adminConfig.experiences.splice(idx, 1);
         renderExperienceAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
     });
   }
 
   // 10. Save All Admin Changes
-  function saveAllAdminChanges() {
+  function saveAllAdminChanges(showToastMsg = true) {
     if (!adminConfig) adminConfig = getActiveConfig();
 
     // 1. Gather Section Toggles
@@ -1544,7 +1598,7 @@
     const linVal = getVal("adm-soc-linkedin");
     if (linVal) adminConfig.socials.linkedin = linVal;
 
-    // Persist
+    // Persist to localStorage & backend
     saveActiveConfig(adminConfig);
 
     // Live DOM refresh
@@ -1552,8 +1606,15 @@
       window.refreshPortfolioFromConfig(adminConfig);
     }
 
-    showToast("🎉 All changes saved & applied to portfolio live!", "success");
-    closeAdminPanel();
+    if (showToastMsg) {
+      showToast("🎉 All changes saved & applied to portfolio live!", "success");
+      const modal = document.getElementById("admin-control-modal");
+      if (modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+      editingProjectId = null;
+    }
   }
 
 })();
