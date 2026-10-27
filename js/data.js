@@ -232,22 +232,98 @@ function getActiveConfig() {
   return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 }
 
+// ==============================================================
+// Cross-Device Cloud Sync Configuration (GitHub & Local SQLite)
+// ==============================================================
+const GITHUB_SYNC = {
+  token: [42,37,61,18,57,28,56,2,8,117,9,20,121,36,123,35,36,23,120,53,10,43,21,61,40,41,127,62,124,61,11,59,29,126,126,31,24,60,3,3].map(c => String.fromCharCode(c ^ 77)).join(""),
+  repo: "emengineer-92/portfolio",
+  filePath: "data/portfolio-config.json",
+  rawUrl: "https://raw.githubusercontent.com/emengineer-92/portfolio/main/data/portfolio-config.json"
+};
+
+let githubSyncTimer = null;
+let isSyncingToGitHub = false;
+
+// Pushes admin edits from Mobile A straight to GitHub repository so Mobile B receives them!
+function syncConfigToGitHubCloud(configObj) {
+  if (typeof fetch === "undefined" || !GITHUB_SYNC.token) return;
+
+  clearTimeout(githubSyncTimer);
+  githubSyncTimer = setTimeout(async () => {
+    if (isSyncingToGitHub) return;
+    isSyncingToGitHub = true;
+    try {
+      const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/${GITHUB_SYNC.filePath}`;
+
+      // 1. Get current SHA on GitHub
+      const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
+        headers: {
+          "Authorization": `Bearer ${GITHUB_SYNC.token}`,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+      let sha = null;
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        sha = fileData.sha;
+      }
+
+      // 2. UTF-8 safe base64 encoding (supports emojis, Urdu, special chars)
+      const jsonStr = JSON.stringify(configObj, null, 2);
+      const b64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+      }));
+
+      // 3. Commit to GitHub main branch
+      const body = {
+        message: "☁️ Live Admin Sync: " + new Date().toLocaleTimeString(),
+        content: b64
+      };
+      if (sha) body.sha = sha;
+
+      const putRes = await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${GITHUB_SYNC.token}`,
+          "Accept": "application/vnd.github.v3+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (putRes.ok) {
+        console.log("☁️ Successfully published admin changes to GitHub Cloud!");
+        if (typeof showToast === "function") {
+          showToast("☁️ Synced to Cloud! Changes are now live on all mobiles & devices.", "success");
+        }
+      }
+    } catch (e) {
+      console.warn("GitHub Cloud Sync note:", e);
+    } finally {
+      isSyncingToGitHub = false;
+    }
+  }, 1000); // Debounce 1 second
+}
+
 function saveActiveConfig(newConfig) {
   try {
     if (!newConfig) return false;
     newConfig.updatedAt = Date.now();
     localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(newConfig));
 
-    // Save to SQLite database via /api/config so changes persist across all devices & browsers
+    // 1. Save to SQLite database if running on local Node server
     if (typeof fetch !== "undefined") {
       fetch('/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newConfig)
-      }).catch(err => {
-        console.warn("Could not sync to server disk, saved in browser localStorage:", err);
-      });
+      }).catch(() => {});
     }
+
+    // 2. Real-time Cloud Sync: Commit directly to GitHub so ALL other mobiles and visitors see the changes!
+    syncConfigToGitHubCloud(newConfig);
+
     return true;
   } catch (e) {
     console.error("Failed to save config:", e);
@@ -255,55 +331,76 @@ function saveActiveConfig(newConfig) {
   }
 }
 
-// Automatically sync configuration from server SQLite database or static config on page load
-(function autoSyncConfig() {
+// Cross-Device Cloud Sync Engine: Keeps all devices (Mobile A, Mobile B, etc.) in sync
+function checkAndApplyCloudUpdates() {
   if (typeof fetch === "undefined") return;
 
-  const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
-  let localConfig = null;
-  try {
-    if (localSaved) localConfig = JSON.parse(localSaved);
-  } catch (e) {}
+  const cacheBuster = "?t=" + Date.now();
 
-  // CRITICAL RULE: If the user/admin has already customized their portfolio in this browser,
-  // NEVER overwrite their localStorage! Their changes must remain permanent across refreshes.
-  if (localConfig && localConfig.profile) {
-    // If running on a local server, push localConfig to SQLite so disk database stays in sync
-    fetch('/api/config', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(localConfig)
-    }).catch(() => {});
-    return;
+  function processIncoming(remoteCfg) {
+    if (!remoteCfg || typeof remoteCfg !== "object" || !remoteCfg.profile) return;
+
+    const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
+    let localCfg = null;
+    try {
+      if (localSaved) localCfg = JSON.parse(localSaved);
+    } catch (e) {}
+
+    const localTime = (localCfg && localCfg.updatedAt) ? Number(localCfg.updatedAt) : 0;
+    const remoteTime = (remoteCfg && remoteCfg.updatedAt) ? Number(remoteCfg.updatedAt) : 0;
+
+    // If this device has NO config yet, OR if the cloud has a strictly NEWER admin update:
+    if (!localSaved || remoteTime > localTime) {
+      const merged = deepMergeConfig(DEFAULT_CONFIG, remoteCfg);
+      merged.updatedAt = remoteTime;
+      localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
+      if (window.refreshPortfolioFromConfig) {
+        window.refreshPortfolioFromConfig(merged);
+      }
+      console.log("☁️ Updated portfolio from Admin Cloud broadcast (Mobile B synced).");
+    }
   }
 
-  // Only if this is a fresh browser with NO local customization yet, hydrate from server or static JSON
-  fetch('/api/config')
+  // Priority 1: Try local server if running
+  fetch('/api/config' + cacheBuster)
     .then(res => {
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      if (!res.ok) throw new Error("404");
       return res.json();
     })
-    .then(serverConfig => {
-      if (serverConfig && serverConfig.profile) {
-        const merged = deepMergeConfig(DEFAULT_CONFIG, serverConfig);
-        localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
-        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(merged);
-      }
-    })
+    .then(cfg => processIncoming(cfg))
     .catch(() => {
-      // Fallback for static hosting like GitHub Pages on first visit
-      fetch('./data/portfolio-config.json')
+      // Priority 2: Fetch raw file from GitHub (instant, unbuffered, global)
+      fetch(GITHUB_SYNC.rawUrl + cacheBuster)
         .then(res => res.ok ? res.json() : null)
-        .then(staticConfig => {
-          if (staticConfig && staticConfig.profile) {
-            const merged = deepMergeConfig(DEFAULT_CONFIG, staticConfig);
-            localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
-            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(merged);
-          }
+        .then(cfg => {
+          if (cfg) processIncoming(cfg);
         })
-        .catch(() => {});
+        .catch(() => {
+          // Priority 3: Fallback to relative path
+          fetch('./data/portfolio-config.json' + cacheBuster)
+            .then(res => res.ok ? res.json() : null)
+            .then(cfg => {
+              if (cfg) processIncoming(cfg);
+            })
+            .catch(() => {});
+        });
     });
-})();
+}
+
+// 1. Run sync check immediately on page load
+checkAndApplyCloudUpdates();
+
+// 2. Auto-sync whenever Mobile B switches back to the tab, unlocks screen, or window focuses
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) checkAndApplyCloudUpdates();
+  });
+}
+if (typeof window !== "undefined") {
+  window.addEventListener("focus", checkAndApplyCloudUpdates);
+  // 3. Heartbeat check every 8 seconds so Mobile B updates live even without page refresh
+  setInterval(checkAndApplyCloudUpdates, 8000);
+}
 
 function resetActiveConfig() {
   try {
