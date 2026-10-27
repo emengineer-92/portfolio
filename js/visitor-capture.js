@@ -78,8 +78,6 @@ const VisitorState = {
     // Update UI badge
     this.updateNavbarBadge();
 
-    showToast(`🎉 Thank you sir! Welcome to exploring the career & technical journey of EM.Subhan Ali.`, "success");
-
     closeVisitorModal();
     return true;
   },
@@ -200,19 +198,16 @@ function triggerRedoyanulStyleOpening(onFinished) {
         if (loadingBtn) loadingBtn.classList.add("loading-complete");
 
         setTimeout(() => {
-          // Step 2: Explode / Zoom expand
+          // Step 2: Smooth and fast departure (scale + fade together)
           if (loadingWrap) loadingWrap.classList.add("loading-clicked");
+          loaderScreen.classList.add("hidden");
 
           setTimeout(() => {
-            // Step 3: Fade out loader screen and reveal portfolio
-            loaderScreen.classList.add("hidden");
-            setTimeout(() => {
-              loaderScreen.style.display = "none";
-              if (onFinished) onFinished();
-            }, 650);
-          }, 450);
-        }, 550);
-      }, 150);
+            loaderScreen.style.display = "none";
+            if (onFinished) onFinished();
+          }, 360);
+        }, 320);
+      }, 70);
     }
   }
 
