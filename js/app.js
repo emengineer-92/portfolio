@@ -935,8 +935,7 @@ function setupNavigation() {
           isClickScrolling = false;
         }, 900);
 
-        // 5. Close menu on mobile
-        closeHorizontalMenu();
+        // Keep navigation buttons visible (do not remove/close on click)
       }
     });
   });
