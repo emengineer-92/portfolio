@@ -96,6 +96,8 @@ body {
   pointer-events: none;
   background: transparent;
   transform: translateZ(0);
+  filter: blur(2px);
+  will-change: transform;
 }
 
 #particle-canvas,
@@ -137,6 +139,11 @@ body {
 .site-wrapper {
   position: relative;
   z-index: 1;
+  contain: layout;
+}
+
+.section {
+  contain: content;
 }
 
 /* Typography Headings */
