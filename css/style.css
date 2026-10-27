@@ -1723,14 +1723,16 @@ footer {
   justify-content: center;
   padding: 24px 16px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease, visibility 0.35s;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .modal-overlay.active {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -1746,8 +1748,9 @@ footer {
   border-radius: calc(var(--border-radius) * 1.3);
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(192, 132, 252, 0.2);
   position: relative;
-  transform: translateY(20px);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+  opacity: 0;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease;
   scrollbar-width: thin;
   scrollbar-color: rgba(56, 189, 248, 0.4) transparent;
 }
@@ -1763,6 +1766,15 @@ footer {
 
 .modal-overlay.active .visitor-modal-box {
   transform: translateY(0);
+  opacity: 1;
+}
+
+/* Compact size for visitor gate modal (small, neat, luxury) */
+.visitor-gate-box {
+  max-width: 380px !important;
+  padding: 24px 20px !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(192, 132, 252, 0.18) !important;
 }
 
 .modal-close-btn {
@@ -2848,7 +2860,7 @@ footer {
   justify-content: center;
   overflow: hidden;
   opacity: 1;
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
 }
 
 .opening-loader-screen.hidden {
@@ -3072,9 +3084,11 @@ footer {
 
 /* State: Clicked / Explode reveal into Portfolio */
 .loading-clicked {
-  transform: scale(25) !important;
+  transform: scale(2.8) !important;
   opacity: 0 !important;
-  transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.6s ease !important;
+  filter: blur(8px) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease, filter 0.35s ease !important;
   pointer-events: none !important;
+  will-change: transform, opacity, filter;
 }
 
