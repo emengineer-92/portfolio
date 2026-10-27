@@ -844,14 +844,41 @@ function setupContactForm() {
   const phoneInput = document.getElementById("contact-phone");
   const phoneErr = document.getElementById("contact-phone-error");
 
-  // Real-time strictly 11 digits numerical filter
+  // Real-time strictly 11 digits numerical filter & hard limitation
   if (phoneInput) {
+    phoneInput.addEventListener("keydown", (e) => {
+      if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End', 'Enter'].includes(e.key)) return;
+      if (e.ctrlKey || e.metaKey) return;
+      if (!/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+        return;
+      }
+      if (phoneInput.value.length >= 11 && phoneInput.selectionStart === phoneInput.selectionEnd) {
+        e.preventDefault();
+      }
+    });
+
+    phoneInput.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+      phoneInput.value = text.replace(/[^0-9]/g, '').slice(0, 11);
+      phoneInput.dispatchEvent(new Event('input'));
+    });
+
     phoneInput.addEventListener("input", () => {
-      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "").slice(0, 11);
+      if (phoneInput.value.length > 11) {
+        phoneInput.value = phoneInput.value.slice(0, 11);
+      }
+      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "");
+
       if (phoneErr) {
-        if (phoneInput.value.length > 0 && phoneInput.value.length !== 11) {
+        if (phoneInput.value.length > 0 && phoneInput.value.length < 11) {
           phoneErr.style.display = "block";
-          phoneInput.style.borderColor = "#ef4444";
+          phoneErr.innerHTML = `<i class="fas fa-info-circle"></i> ${phoneInput.value.length}/11 hindse likhe hain. Mukammal 11 hindse lazmi hain.`;
+          phoneInput.style.borderColor = "#f59e0b";
+        } else if (phoneInput.value.length === 11) {
+          phoneErr.style.display = "none";
+          phoneInput.style.borderColor = "var(--color-mint)";
         } else {
           phoneErr.style.display = "none";
           phoneInput.style.borderColor = "";
@@ -864,13 +891,16 @@ function setupContactForm() {
     e.preventDefault();
 
     const name = document.getElementById("contact-name").value.trim();
-    const cleanPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, "") : "";
+    const cleanPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, "").slice(0, 11) : "";
     const projectType = document.getElementById("contact-type").value;
     const message = document.getElementById("contact-message").value.trim();
 
     // Strict 11-digit phone check
     if (!name || !cleanPhone || cleanPhone.length !== 11) {
-      if (phoneErr) phoneErr.style.display = "block";
+      if (phoneErr) {
+        phoneErr.style.display = "block";
+        phoneErr.innerHTML = `<i class="fas fa-exclamation-circle"></i> Phone number strictly 11 hindso ka hona lazmi hai (e.g. 03446266246).`;
+      }
       if (phoneInput) {
         phoneInput.style.borderColor = "#ef4444";
         phoneInput.focus();
@@ -916,7 +946,7 @@ function setupContactForm() {
     }).catch(() => {});
 
     // 2. Dispatch structured inquiry email to Subhan's verified email
-    // Email par is tarha aayega: Name, Phone (11 digits), Jis Kaam Ke Liye Apply Kiya, aur Bio
+    // Email layout: Top Name, then Phone Number, Subject, and Message / Bio
     const emailVal = config.socials?.email || config.adminEmail || "mirzasubhanali449@gmail.com";
     fetch(`https://formsubmit.co/ajax/${encodeURIComponent(emailVal)}`, {
       method: "POST",
@@ -925,12 +955,13 @@ function setupContactForm() {
         "Accept": "application/json"
       },
       body: JSON.stringify({
-        _subject: `💼 New Inquiry: ${name} (${cleanPhone}) - ${projectType}`,
+        _subject: `${projectType} - ${name} (${cleanPhone})`,
+        _captcha: "false",
         _template: "table",
-        "Client Name": name,
+        "Name": name,
         "Phone Number": cleanPhone,
-        "Applied For Service / Work": projectType,
-        "Client Bio & Project Details": message,
+        "Subject": projectType,
+        "Message": message,
         "Date & Time": timestamp
       })
     }).catch(() => {});
