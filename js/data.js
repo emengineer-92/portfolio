@@ -805,4 +805,72 @@ async function saveReviewToCloud(reviewObj) {
   }
 }
 
+// Delete review from both local cache, SQLite, and permanently from GitHub data/reviews.json
+async function deleteReviewFromCloud(reviewId) {
+  if (!reviewId) return false;
+  try {
+    // 1. Remove from local storage cache immediately
+    let list = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_REVIEWS_KEY);
+      if (raw) list = JSON.parse(raw);
+    } catch (e) {}
+    list = list.filter(item => item.id !== reviewId);
+    localStorage.setItem(STORAGE_REVIEWS_KEY, JSON.stringify(list));
+
+    // 2. If running on local server, send DELETE /api/reviews/:id
+    if (typeof fetch !== "undefined") {
+      fetch('/api/reviews/' + encodeURIComponent(reviewId), {
+        method: 'DELETE'
+      }).catch(() => {});
+    }
+
+    // 3. Commit removal directly to GitHub data/reviews.json so it is deleted for ALL visitors permanently!
+    if (typeof fetch !== "undefined" && GITHUB_SYNC.token) {
+      const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/reviews.json`;
+      const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
+        headers: { "Authorization": "token " + GITHUB_SYNC.token }
+      });
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        const sha = fileData.sha;
+        let remoteList = [];
+        try {
+          remoteList = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+        } catch (e) {}
+        if (Array.isArray(remoteList)) {
+          remoteList = remoteList.filter(item => item.id !== reviewId);
+          const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteList, null, 2))));
+          const body = {
+            message: "🗑️ Deleted review: " + reviewId,
+            content: b64,
+            sha: sha,
+            branch: "main"
+          };
+          await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+              "Authorization": "token " + GITHUB_SYNC.token,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          });
+          console.log("🗑️ Successfully deleted review from GitHub data/reviews.json permanently!");
+        }
+      }
+    }
+
+    // 4. If on the main portfolio page, re-render reviews
+    if (typeof window !== "undefined" && typeof window.renderClientReviews === "function") {
+      window.renderClientReviews();
+    }
+
+    return true;
+  } catch (e) {
+    console.warn("Error deleting review from cloud:", e);
+    return false;
+  }
+}
+
+
 
