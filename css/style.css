@@ -1396,6 +1396,31 @@ section {
   width: min(62%, 760px);
   max-width: 100%;
   margin: 0;
+  max-height: 285px; /* Shows only top 3 latest reviews initially; all rest are scrollable */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  padding-bottom: 6px;
+  scroll-behavior: smooth;
+}
+
+.reviews-compact-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reviews-compact-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.reviews-compact-list::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.45);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.reviews-compact-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan);
 }
 
 .review-compact-card {
