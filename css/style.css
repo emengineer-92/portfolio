@@ -2786,5 +2786,12 @@ footer {
   }
 }
 
-
-
+/* Permanently disable all notification boxes & toasts */
+.toast-container,
+.toast,
+#toast-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
