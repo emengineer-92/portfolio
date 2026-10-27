@@ -13,7 +13,7 @@
   },
   "profile": {
     "name": "EM.Subhan ali",
-    "brand": "DevSphere engineer",
+    "brand": "DevSphere",
     "tagline": "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
     "taglines": [
       "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
@@ -29,7 +29,7 @@
     "location": "Pakistan 🇵🇰 (Global & Remote)",
     "statusText": "Enrolling in BS CS (Late 2026) • Available for Full-Stack & Robotics",
     "experienceYears": "4+",
-    "completedProjects": "3+",
+    "completedProjects": "35+",
     "codeCommits": "8.4k",
     "clientSatisfaction": "100%"
   },
@@ -242,5 +242,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793075409328
+  "updatedAt": 1793072901719
 }
