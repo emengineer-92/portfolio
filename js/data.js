@@ -192,7 +192,17 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-const STORAGE_CONFIG_KEY = "devsphere_portfolio_config";
+const STORAGE_KEYS = {
+  CONFIG: "devsphere_portfolio_config",
+  VISITORS: "devsphere_visitors_list",
+  CURRENT_VISITOR: "devsphere_current_visitor",
+  ACCESS_ALLOWED: "devsphere_visitor_allowed"
+};
+if (typeof window !== "undefined") {
+  window.STORAGE_KEYS = STORAGE_KEYS;
+}
+
+const STORAGE_CONFIG_KEY = STORAGE_KEYS.CONFIG;
 
 function deepMergeConfig(target, source) {
   const output = JSON.parse(JSON.stringify(target));
@@ -245,43 +255,59 @@ function saveActiveConfig(newConfig) {
   }
 }
 
-// Automatically sync configuration from server SQLite database on page load
+// Automatically sync configuration from server SQLite database or static config on page load
 (function autoSyncConfig() {
-  if (typeof fetch !== "undefined") {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(serverConfig => {
-        if (!serverConfig || typeof serverConfig !== "object" || !serverConfig.profile) return;
-        
-        const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
-        let localConfig = null;
-        try {
-          if (localSaved) localConfig = JSON.parse(localSaved);
-        } catch (e) {}
+  if (typeof fetch === "undefined") return;
 
-        const localTime = (localConfig && localConfig.updatedAt) ? Number(localConfig.updatedAt) : 0;
-        const serverTime = (serverConfig && serverConfig.updatedAt) ? Number(serverConfig.updatedAt) : 1000;
+  function applyRemoteConfig(remoteConfig) {
+    if (!remoteConfig || typeof remoteConfig !== "object" || !remoteConfig.profile) return;
+    
+    const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
+    let localConfig = null;
+    try {
+      if (localSaved) localConfig = JSON.parse(localSaved);
+    } catch (e) {}
 
-        // If server has newer data OR user has no local data yet, hydrate local storage
-        if (serverTime >= localTime || !localSaved) {
-          const merged = deepMergeConfig(DEFAULT_CONFIG, serverConfig);
-          merged.updatedAt = serverTime;
-          localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
-          if (window.refreshPortfolioFromConfig) {
-            window.refreshPortfolioFromConfig(merged);
-          }
-        } 
-        // If local storage has newer edits from admin, push them to SQLite server database
-        else if (localTime > serverTime && localConfig && localConfig.profile) {
-          fetch('/api/config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(localConfig)
-          }).catch(() => {});
-        }
-      })
-      .catch(() => {});
+    const localTime = (localConfig && localConfig.updatedAt) ? Number(localConfig.updatedAt) : 0;
+    const remoteTime = (remoteConfig && remoteConfig.updatedAt) ? Number(remoteConfig.updatedAt) : 1000;
+
+    // If user has NO local edits yet, or remote data is strictly newer:
+    if (!localSaved || (!localTime && remoteTime) || remoteTime > localTime) {
+      const merged = deepMergeConfig(DEFAULT_CONFIG, remoteConfig);
+      merged.updatedAt = remoteTime;
+      localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
+      if (window.refreshPortfolioFromConfig) {
+        window.refreshPortfolioFromConfig(merged);
+      }
+    } 
+    // If local browser has newer admin edits than the server, push them to SQLite
+    else if (localTime > remoteTime && localConfig && localConfig.profile) {
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localConfig)
+      }).catch(() => {});
+    }
   }
+
+  // 1. Try /api/config (localhost / Cloudflare Tunnel)
+  fetch('/api/config')
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(serverConfig => {
+      applyRemoteConfig(serverConfig);
+    })
+    .catch(() => {
+      // 2. If /api/config returns 404 (e.g. GitHub Pages), fetch static config
+      fetch('./data/portfolio-config.json')
+        .then(res => res.ok ? res.json() : null)
+        .then(staticConfig => {
+          if (staticConfig) applyRemoteConfig(staticConfig);
+        })
+        .catch(() => {});
+    });
 })();
 
 function resetActiveConfig() {
