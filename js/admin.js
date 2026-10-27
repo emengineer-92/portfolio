@@ -71,7 +71,7 @@
     const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
 
     if (triggerEl) {
-      triggerEl.setAttribute("title", "Hold for 5s to open Admin");
+      triggerEl.setAttribute("title", "DevSphere");
       triggerEl.style.cursor = "pointer";
 
       // Mouse events (Desktop)
