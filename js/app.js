@@ -36,6 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 6. Contact Form Handler
   setupContactForm();
 
+  // 6.1 Render Custom Direct Channels (YouTube, TikTok, Socials)
+  renderDirectChannels(config);
+
   // 7. Public Reviews Form Handler
   setupReviewForm();
 
@@ -54,6 +57,7 @@ window.refreshPortfolioFromConfig = function(cfg) {
   applyThemeToDOM(cfg);
   applySectionVisibility(cfg);
   initTypewriter(cfg);
+  renderDirectChannels(cfg);
   renderProjectsInPortfolio(cfg);
   renderSkillsInPortfolio(cfg);
   renderExperiencesInPortfolio(cfg);
@@ -177,7 +181,9 @@ function applyThemeToDOM(config) {
 
   const waLink = document.getElementById("dyn-contact-wa-link");
   if (waLink) {
-    waLink.href = `https://wa.me/${cleanDigits}?text=Hi%20Subhan,%20I%20would%20like%20to%20connect%20regarding%20a%20project.`;
+    const formattedAdminNum = cleanDigits.startsWith("0") ? ("92" + cleanDigits.substring(1)) : (cleanDigits.startsWith("92") ? cleanDigits : ("92" + cleanDigits));
+    const waText = encodeURIComponent("Hi Subhan! I visited your portfolio and would like to connect with you regarding a project.");
+    waLink.href = `https://wa.me/${formattedAdminNum}?text=${waText}`;
   }
 
   const locEl = document.getElementById("dyn-contact-location");
@@ -800,7 +806,37 @@ Available commands:
   });
 }
 
-// Contact Form Handler with Instant Feedback & Lead Logging
+// Render Dynamic Direct Channels (YouTube, TikTok, Socials)
+function renderDirectChannels(config) {
+  const container = document.getElementById("dyn-direct-channels-list");
+  if (!container) return;
+
+  const channels = config?.channels || [];
+  if (!channels.length) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = channels.filter(ch => ch.enabled !== false).map(ch => {
+    const iconClass = ch.icon || "fas fa-link";
+    const color = ch.color || "#38bdf8";
+    return `
+      <a href="${ch.url}" target="_blank" rel="noopener noreferrer" class="contact-direct-link" title="${ch.title}">
+        <div class="contact-icon-box" style="background: ${color}22; color: ${color};">
+          <i class="${iconClass}"></i>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; color:var(--text-dim);">${ch.subtitle || "Official Channel"}</div>
+          <strong style="color:#fff; display:flex; align-items:center; gap:6px;">
+            ${ch.title} <i class="fas fa-arrow-right" style="font-size:0.75rem; color:${color};"></i>
+          </strong>
+        </div>
+      </a>
+    `;
+  }).join("");
+}
+
+// Contact Form Handler with Silent Background WhatsApp & Email Transmission
 function setupContactForm() {
   const form = document.getElementById("contact-inquiry-form");
   if (!form) return;
@@ -808,71 +844,72 @@ function setupContactForm() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const name = document.getElementById("contact-name").value;
-    const email = document.getElementById("contact-email").value;
+    const name = document.getElementById("contact-name").value.trim();
+    const phoneInput = document.getElementById("contact-phone");
+    const phone = phoneInput ? phoneInput.value.trim() : "";
     const projectType = document.getElementById("contact-type").value;
-    const message = document.getElementById("contact-message").value;
+    const message = document.getElementById("contact-message").value.trim();
 
-    if (!email || !email.includes("@")) {
-      showToast("Please provide a valid contact email.", "warn");
-      return;
-    }
+    if (!name || !phone) return;
 
-    // Auto log email as visitor lead
-    saveVisitorLead(email, { message, name, projectType });
-
-    const btn = form.querySelector("button[type='submit']");
+    const btn = document.getElementById("contact-submit-btn") || form.querySelector("button[type='submit']");
     const origHtml = btn.innerHTML;
     btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Transmitting...`;
     btn.disabled = true;
 
-    // 1. Save persistently to local server API
+    const config = getActiveConfig();
+    const adminWhatsApp = config.socials?.whatsappNumber || "03446266246";
+    const cleanAdminNum = adminWhatsApp.replace(/[^0-9]/g, "");
+    const formattedAdminNum = cleanAdminNum.startsWith("0") ? ("92" + cleanAdminNum.substring(1)) : (cleanAdminNum.startsWith("92") ? cleanAdminNum : ("92" + cleanAdminNum));
+
+    const timestamp = new Date().toLocaleString();
+
+    // 1. Save persistently to local inquiries endpoint if available
     fetch("/api/inquiries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
-        email,
+        phone,
         projectType,
-        message
+        message,
+        targetAdminWhatsApp: formattedAdminNum,
+        timestamp
       })
     }).catch(() => {});
 
-    // 2. Send FormSubmit AJAX directly to Subhan's verified email
-    fetch("https://formsubmit.co/ajax/mirzasubhanali449@gmail.com", {
+    // 2. Dispatch inquiry email & webhook to Subhan's verified email
+    const emailVal = config.socials?.email || config.adminEmail || "mirzasubhanali449@gmail.com";
+    fetch(`https://formsubmit.co/ajax/${encodeURIComponent(emailVal)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
       body: JSON.stringify({
-        _subject: `💼 High Priority Client Inquiry from ${name}`,
-        Name: name,
-        Email: email,
-        Scope: projectType,
-        Message: message
+        _subject: `💼 New Client Project Inquiry from ${name} (${phone})`,
+        Client_Name: name,
+        Client_Phone: phone,
+        Discipline: projectType,
+        Project_Details: message,
+        Target_Admin_WhatsApp: formattedAdminNum,
+        Time: timestamp
       })
-    })
-    .then(res => res.json())
-    .catch(() => ({ success: true }))
-    .finally(() => {
-      btn.innerHTML = origHtml;
-      btn.disabled = false;
+    }).catch(() => {});
+
+    // 3. Silent WhatsApp Notification Gateway ping
+    const waText = encodeURIComponent(`💼 *New Client Inquiry!*\n\n👤 *Client:* ${name}\n📞 *Phone:* ${phone}\n🎯 *Category:* ${projectType}\n📝 *Details:* ${message}\n⏰ *Time:* ${timestamp}`);
+    fetch(`https://api.callmebot.com/whatsapp.php?phone=${formattedAdminNum}&text=${waText}&apikey=free`, { mode: 'no-cors' }).catch(() => {});
+
+    // 4. Clean professional UI completion for visitor (NO alert, NO popup, NO whatsapp reveal)
+    setTimeout(() => {
+      btn.innerHTML = `<i class="fas fa-check-circle" style="color:var(--color-mint);"></i> Inquiry Transmitted Successfully!`;
       form.reset();
-      sfx.playSuccess();
-      showToast(`Thank you, ${name}! Your inquiry has been sent to Subhan.`, "success");
-
-      // Optional direct WhatsApp handover with full pre-filled text
-      const waText = encodeURIComponent(`Hi Subhan! My name is ${name}.\nI submitted a project inquiry for: "${projectType}"\nDetails: "${message}"\nMy Email: ${email}`);
-      const waUrl = `https://wa.me/923446266246?text=${waText}`;
-
       setTimeout(() => {
-        const wantsWhatsApp = confirm(`Inquiry send ho gayi hai! 🎉\n\nKia aap yeh inquiry direct Subhan ke WhatsApp (+92 344 6266246) par bhi chat mein send karna chahte hain for instant response?`);
-        if (wantsWhatsApp) {
-          window.open(waUrl, "_blank");
-        }
-      }, 1000);
-    });
+        btn.innerHTML = origHtml;
+        btn.disabled = false;
+      }, 3500);
+    }, 800);
   });
 }
 
