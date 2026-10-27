@@ -31,43 +31,64 @@
     bootAdmin();
   }
 
-  // 1. Rapid Sequence 5-Tap Detector on Brand Icon (`</>`)
-  // Admin panel will ONLY open if 5 taps are in fast sequence (< 500ms between taps)
-  // Slow / casual taps are completely ignored and will reset!
-  let tapTimestamps = [];
+  // 1. 5-Second Press-and-Hold Detector on Brand Icon
+  // Admin panel will ONLY open if user holds the icon continuously for 5 seconds
+  let holdTimer = null;
+  let holdInterval = null;
+  let holdSecondsLeft = 5;
+
+  function startHold(e) {
+    if (e && e.cancelable) {
+      e.preventDefault();
+    }
+    clearTimeout(holdTimer);
+    clearInterval(holdInterval);
+    holdSecondsLeft = 5;
+
+    const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
+    if (triggerEl) triggerEl.classList.add("holding");
+
+    if (typeof showToast === "function") {
+      showToast("⏳ Keep holding for 5 seconds to open Admin Panel...", "info", 1500);
+    }
+
+    holdInterval = setInterval(() => {
+      holdSecondsLeft--;
+      if (holdSecondsLeft > 0) {
+        if (typeof showToast === "function") {
+          showToast(`⏳ Hold for ${holdSecondsLeft}s...`, "info", 900);
+        }
+      }
+    }, 1000);
+
+    holdTimer = setTimeout(() => {
+      clearInterval(holdInterval);
+      if (triggerEl) triggerEl.classList.remove("holding");
+      if (navigator.vibrate) navigator.vibrate(200);
+      openAdminPanel();
+      if (typeof showToast === "function") {
+        showToast("👑 Admin Control Panel Unlocked!", "success", 3000);
+      }
+    }, 5000);
+  }
+
+  function cancelHold() {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+    if (holdInterval) {
+      clearInterval(holdInterval);
+      holdInterval = null;
+    }
+    const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
+    if (triggerEl) triggerEl.classList.remove("holding");
+  }
 
   window.handleBrandIconClick = function(e) {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
-    }
-
-    const now = Date.now();
-
-    // If more than 500ms has elapsed since the previous tap, reset the sequence!
-    if (tapTimestamps.length > 0 && (now - tapTimestamps[tapTimestamps.length - 1] > 500)) {
-      tapTimestamps = [];
-    }
-
-    tapTimestamps.push(now);
-
-    // Keep only last 5 taps
-    if (tapTimestamps.length > 5) {
-      tapTimestamps.shift();
-    }
-
-    // Require exact 5 rapid taps within 1.8 seconds total
-    if (tapTimestamps.length === 5) {
-      const totalSpan = now - tapTimestamps[0];
-      if (totalSpan <= 1800) {
-        tapTimestamps = [];
-        openAdminPanel();
-        if (typeof showToast === "function") {
-          showToast("👑 Admin Control Panel Unlocked!", "success");
-        }
-      } else {
-        tapTimestamps = [];
-      }
     }
   };
 
@@ -75,13 +96,21 @@
     const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
 
     if (triggerEl) {
-      triggerEl.setAttribute("title", "DevSphere");
+      triggerEl.setAttribute("title", "Hold for 5s to open Admin");
       triggerEl.style.cursor = "pointer";
 
-      // Also listen to touchstart for smooth mobile tapping
-      triggerEl.addEventListener("touchstart", function(e) {
-        handleBrandIconClick(e);
-      }, { passive: false });
+      // Mouse events (Desktop)
+      triggerEl.addEventListener("mousedown", startHold);
+      triggerEl.addEventListener("mouseup", cancelHold);
+      triggerEl.addEventListener("mouseleave", cancelHold);
+
+      // Touch events (Mobile)
+      triggerEl.addEventListener("touchstart", startHold, { passive: false });
+      triggerEl.addEventListener("touchend", cancelHold, { passive: true });
+      triggerEl.addEventListener("touchcancel", cancelHold, { passive: true });
+
+      // Prevent mobile long-press context menu
+      triggerEl.addEventListener("contextmenu", (e) => e.preventDefault());
     }
 
     // Keyboard shortcut: Ctrl + Shift + A
@@ -516,6 +545,29 @@
                 <label class="form-label" for="adm-prof-brand">Brand / Studio Name</label>
                 <div class="field-placement-tag"><i class="fas fa-map-pin"></i> Website Par: Gradient Brand Subtitle (DevSphere)</div>
                 <input type="text" id="adm-prof-brand" class="form-control" placeholder="DevSphere">
+              </div>
+
+              <div class="form-group form-col-full">
+                <label class="form-label" for="adm-prof-icon">Brand / Logo Icon (Navbar Icon)</label>
+                <div class="field-placement-tag"><i class="fas fa-map-pin"></i> Website Par: Top Navbar Brand Logo Icon (5s hold trigger)</div>
+                <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px;">
+                  <div id="adm-icon-preview-box" style="width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg, rgba(56,189,248,0.25), rgba(192,132,252,0.25)); border:1px solid #38bdf8; display:flex; align-items:center; justify-content:center; font-size:1.3rem; color:#38bdf8; flex-shrink:0;">
+                    <i id="adm-icon-preview-i" class="fas fa-code"></i>
+                  </div>
+                  <input type="text" id="adm-prof-icon" class="form-control" placeholder="fas fa-code">
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-code"><i class="fas fa-code"></i> Code</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-terminal"><i class="fas fa-terminal"></i> Terminal</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-robot"><i class="fas fa-robot"></i> Robot</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-microchip"><i class="fas fa-microchip"></i> Chip</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-laptop-code"><i class="fas fa-laptop-code"></i> Laptop</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-user-astronaut"><i class="fas fa-user-astronaut"></i> Astronaut</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-bolt"><i class="fas fa-bolt"></i> Bolt</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-rocket"><i class="fas fa-rocket"></i> Rocket</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-brain"><i class="fas fa-brain"></i> AI Brain</button>
+                  <button type="button" class="btn btn-secondary btn-sm adm-icon-preset" data-icon="fas fa-cubes"><i class="fas fa-cubes"></i> 3D Cubes</button>
+                </div>
               </div>
 
               <div class="form-group form-col-full">
@@ -1087,7 +1139,7 @@
 
     // Real-time auto-save for profile text inputs on change/blur
     const profileFieldIds = [
-      "adm-prof-name", "adm-prof-brand", "adm-prof-bio", "adm-prof-badge", "adm-prof-location",
+      "adm-prof-name", "adm-prof-brand", "adm-prof-icon", "adm-prof-bio", "adm-prof-badge", "adm-prof-location",
       "adm-prof-taglines", "adm-stat-exp", "adm-stat-proj", "adm-stat-commits", "adm-stat-sat",
       "adm-prof-avatar-url", "adm-soc-email", "adm-soc-wa", "adm-soc-github", "adm-soc-linkedin"
     ];
@@ -1098,6 +1150,24 @@
           saveAllAdminChanges(false);
         });
       }
+    });
+
+    // Icon presets and live preview
+    const iconInput = document.getElementById("adm-prof-icon");
+    const iconPreview = document.getElementById("adm-icon-preview-i");
+    if (iconInput && iconPreview) {
+      iconInput.addEventListener("input", () => {
+        iconPreview.className = iconInput.value.trim() || "fas fa-code";
+      });
+    }
+
+    document.querySelectorAll(".adm-icon-preset").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const iconClass = btn.dataset.icon;
+        if (iconInput) iconInput.value = iconClass;
+        if (iconPreview) iconPreview.className = iconClass;
+        saveAllAdminChanges(false);
+      });
     });
 
     // Click on modal backdrop to close
@@ -1125,6 +1195,9 @@
     const prof = cfg.profile || {};
     setVal("adm-prof-name", prof.name || "");
     setVal("adm-prof-brand", prof.brand || "");
+    setVal("adm-prof-icon", prof.icon || "fas fa-code");
+    const iconPreviewEl = document.getElementById("adm-icon-preview-i");
+    if (iconPreviewEl) iconPreviewEl.className = prof.icon || "fas fa-code";
     setVal("adm-prof-bio", prof.heroBio || "");
     setVal("adm-prof-badge", prof.badge || "");
     setVal("adm-prof-location", prof.location || "");
@@ -1546,6 +1619,9 @@
 
     const brandVal = getVal("adm-prof-brand");
     if (brandVal) adminConfig.profile.brand = brandVal;
+
+    const iconVal = getVal("adm-prof-icon");
+    if (iconVal) adminConfig.profile.icon = iconVal;
 
     const bioVal = getVal("adm-prof-bio");
     if (bioVal) adminConfig.profile.heroBio = bioVal;
