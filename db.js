@@ -336,6 +336,30 @@ function addReview(reviewData) {
   return reviewEntry;
 }
 
+function deleteReview(id) {
+  if (!id) return false;
+  if (isNativeSqlite && db) {
+    try {
+      const stmt = db.prepare('DELETE FROM reviews WHERE id = ?');
+      stmt.run(id);
+    } catch (e) {}
+  }
+
+  // Dual backup in reviews.json
+  try {
+    const reviewsFile = path.join(DB_DIR, 'reviews.json');
+    if (fs.existsSync(reviewsFile)) {
+      let current = JSON.parse(fs.readFileSync(reviewsFile, 'utf8'));
+      if (Array.isArray(current)) {
+        current = current.filter(r => r.id !== id);
+        fs.writeFileSync(reviewsFile, JSON.stringify(current, null, 2), 'utf8');
+      }
+    }
+  } catch (e) {}
+
+  return true;
+}
+
 // Config API
 function getConfig() {
   if (isNativeSqlite && db) {
@@ -443,6 +467,7 @@ module.exports = {
   addInquiry,
   getReviews,
   addReview,
+  deleteReview,
   getConfig,
   saveConfig,
   logVisitor,
