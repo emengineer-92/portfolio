@@ -198,13 +198,6 @@
   ],
   "experiences": [
     {
-      "year": "2026",
-      "role": "Vloging",
-      "company": "Trading vloges",
-      "period": "Present",
-      "description": "i am start vlogs . start trading for some earning"
-    },
-    {
       "year": "NOW",
       "role": "BS Computer Science (BS CS)",
       "company": "University CS Program Admission",
@@ -261,5 +254,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793075359351
+  "updatedAt": 1793075368792
 }
