@@ -151,7 +151,7 @@
           </div>
           <div class="admin-header-btns">
             <button type="button" class="btn btn-primary btn-sm" id="admin-save-btn-top">
-              <i class="fas fa-save"></i> Save Changes
+              <i class="fas fa-cloud-upload-alt"></i> Save & Sync All Mobiles
             </button>
             <button type="button" class="admin-close-x" onclick="closeAdminPanel()" title="Close Admin Panel">
               <i class="fas fa-times"></i>
@@ -840,7 +840,7 @@
               Close
             </button>
             <button type="button" class="btn btn-primary" id="admin-save-btn-bottom">
-              <i class="fas fa-save"></i> Save All Changes
+              <i class="fas fa-cloud-upload-alt"></i> Save & Sync All Mobiles
             </button>
           </div>
         </div>
@@ -1598,8 +1598,8 @@
     const linVal = getVal("adm-soc-linkedin");
     if (linVal) adminConfig.socials.linkedin = linVal;
 
-    // Persist to localStorage & backend
-    saveActiveConfig(adminConfig);
+    // Persist to localStorage & backend immediately
+    saveActiveConfig(adminConfig, true);
 
     // Live DOM refresh
     if (window.refreshPortfolioFromConfig) {
