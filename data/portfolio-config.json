@@ -13,15 +13,11 @@
   },
   "profile": {
     "name": "EM.Subhan ali",
-    "brand": "DevSphere",
+    "brand": "DevSphere engineer",
     "tagline": "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
     "taglines": [
       "Full-Stack Web Developer • Frontend & Backend (2025 — 2026)",
-      "Passionate Robotics & Embedded Hardware Innovator",
-      "Intermediate in Computer Science (ICS Graduate)",
-      "Admitted in BS Computer Science (BS CS 2026)",
-      "3D Animation, Video Editing & Adobe Photoshop Specialist",
-      "Tech Entrepreneur • Designing Scalable Business Ventures"
+      "my two brothers"
     ],
     "heroBio": "Pakistani Full-Stack Developer, Creative Media Specialist, and Aspiring Robotics Engineer. Proven journey from Computer Foundations & Office Apps (2023–2024), Adobe Photoshop & Video Editing, 3D CGI Animation, and Intermediate in Computer Science (ICS), advancing into Full-Stack Web Architecture (2025–2026) and upcoming BS Computer Science program. Passionately engineering robotics hardware and innovative tech business ventures.",
     "avatar": "assets/avatar.jpg?v=2",
@@ -29,7 +25,7 @@
     "location": "Pakistan 🇵🇰 (Global & Remote)",
     "statusText": "Enrolling in BS CS (Late 2026) • Available for Full-Stack & Robotics",
     "experienceYears": "4+",
-    "completedProjects": "35+",
+    "completedProjects": "3+",
     "codeCommits": "8.4k",
     "clientSatisfaction": "100%"
   },
@@ -182,6 +178,18 @@
       "level": 98,
       "category": "office",
       "icon": "fas fa-briefcase"
+    },
+    {
+      "name": "New Technical Skill",
+      "level": 90,
+      "category": "web",
+      "icon": "fas fa-code"
+    },
+    {
+      "name": "New Technical Skill",
+      "level": 90,
+      "category": "web",
+      "icon": "fas fa-code"
     }
   ],
   "experiences": [
@@ -242,5 +250,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793072901719
+  "updatedAt": 1793075697612
 }
