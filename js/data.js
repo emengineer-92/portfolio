@@ -683,3 +683,126 @@ async function deleteInquiryFromCloud(inquiryId) {
   }
 }
 
+// Persistent Client Reviews Cloud & Local Store (Permanently Visible to Everyone)
+const STORAGE_REVIEWS_KEY = "devsphere_reviews_cache";
+
+async function fetchReviewsFromCloud() {
+  let list = [];
+  try {
+    const rawLocal = localStorage.getItem(STORAGE_REVIEWS_KEY);
+    if (rawLocal) list = JSON.parse(rawLocal);
+  } catch (e) {}
+
+  // 1. If running on local node server, fetch from API
+  if (typeof fetch !== "undefined") {
+    try {
+      const res = await fetch("/api/reviews");
+      if (res.ok) {
+        const apiList = await res.json();
+        if (Array.isArray(apiList) && apiList.length) {
+          localStorage.setItem(STORAGE_REVIEWS_KEY, JSON.stringify(apiList));
+          return apiList;
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 2. Fetch directly from GitHub data/reviews.json using GitHub API (Instant & permanently synced)
+  if (typeof fetch !== "undefined") {
+    try {
+      const headers = GITHUB_SYNC.token ? { "Authorization": "token " + GITHUB_SYNC.token } : {};
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/reviews.json?t=${Date.now()}`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        const contentStr = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+        const parsed = JSON.parse(contentStr);
+        if (Array.isArray(parsed) && parsed.length) {
+          localStorage.setItem(STORAGE_REVIEWS_KEY, JSON.stringify(parsed));
+          return parsed;
+        }
+      }
+    } catch (e) {}
+
+    // 3. Fallback to raw static file fetch
+    try {
+      const rawRes = await fetch(`data/reviews.json?t=${Date.now()}`);
+      if (rawRes.ok) {
+        const parsed = await rawRes.json();
+        if (Array.isArray(parsed) && parsed.length) {
+          localStorage.setItem(STORAGE_REVIEWS_KEY, JSON.stringify(parsed));
+          return parsed;
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (list && list.length) return list;
+
+  // 4. Default fallback from active config
+  const cfg = (typeof getActiveConfig === "function") ? getActiveConfig() : null;
+  return cfg?.testimonials || [];
+}
+
+async function saveReviewToCloud(reviewObj) {
+  try {
+    // 1. Save to local storage cache immediately
+    let list = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_REVIEWS_KEY);
+      if (raw) list = JSON.parse(raw);
+    } catch (e) {}
+    if (!list.some(item => item.id === reviewObj.id)) {
+      list.unshift(reviewObj);
+    }
+    localStorage.setItem(STORAGE_REVIEWS_KEY, JSON.stringify(list));
+
+    // 2. If running on local node server, POST to /api/reviews
+    if (typeof fetch !== "undefined") {
+      fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewObj)
+      }).catch(() => {});
+    }
+
+    // 3. Commit directly to GitHub data/reviews.json so ALL mobiles, visitors & devices see it permanently!
+    if (typeof fetch !== "undefined" && GITHUB_SYNC.token) {
+      const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/data/reviews.json`;
+      const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
+        headers: { "Authorization": "token " + GITHUB_SYNC.token }
+      });
+      let sha = null;
+      let remoteList = [];
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        sha = fileData.sha;
+        try {
+          remoteList = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+        } catch (e) {}
+      }
+      if (!Array.isArray(remoteList)) remoteList = [];
+      if (!remoteList.some(item => item.id === reviewObj.id)) {
+        remoteList.unshift(reviewObj);
+      }
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteList, null, 2))));
+      const body = {
+        message: "⭐ New Verified Review from " + (reviewObj.author || "Client"),
+        content: b64
+      };
+      if (sha) body.sha = sha;
+      await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": "token " + GITHUB_SYNC.token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      console.log("⭐ Successfully published new review to GitHub Cloud permanently!");
+    }
+  } catch (e) {
+    console.warn("Error saving review to cloud:", e);
+  }
+}
+
+
