@@ -1392,15 +1392,20 @@ section {
 .reviews-compact-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  width: min(62%, 760px);
+  gap: 0;
+  width: min(65%, 820px);
   max-width: 100%;
   margin: 0;
-  max-height: 285px; /* Shows only top 3 latest reviews initially; all rest are scrollable */
+  height: 236px; /* Exactly fits top 3 reviews in ONE single box */
+  max-height: 236px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-right: 8px;
-  padding-bottom: 6px;
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   scroll-behavior: smooth;
 }
 
@@ -1409,8 +1414,8 @@ section {
 }
 
 .reviews-compact-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0 18px 18px 0;
 }
 
 .reviews-compact-list::-webkit-scrollbar-thumb {
@@ -1424,23 +1429,30 @@ section {
 }
 
 .review-compact-card {
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(14, 20, 32, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow: visible;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.review-compact-card:last-child {
+  border-bottom: none;
 }
 
 .review-compact-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: rgba(56, 189, 248, 0.05);
+  box-shadow: none;
 }
 
 .review-compact-card.is-open {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.08);
+  border-bottom-color: rgba(56, 189, 248, 0.3);
+  box-shadow: none;
 }
 
 .review-row-header {
