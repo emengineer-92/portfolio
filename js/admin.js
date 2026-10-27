@@ -32,43 +32,22 @@
   }
 
   // 1. 5-Second Press-and-Hold Detector on Brand Icon
-  // Admin panel will ONLY open if user holds the icon continuously for 5 seconds
+  // Admin panel will ONLY open if user holds the icon continuously for 5 seconds (100% silent, no notification)
   let holdTimer = null;
-  let holdInterval = null;
-  let holdSecondsLeft = 5;
 
   function startHold(e) {
     if (e && e.cancelable) {
       e.preventDefault();
     }
     clearTimeout(holdTimer);
-    clearInterval(holdInterval);
-    holdSecondsLeft = 5;
 
     const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
     if (triggerEl) triggerEl.classList.add("holding");
 
-    if (typeof showToast === "function") {
-      showToast("⏳ Keep holding for 5 seconds to open Admin Panel...", "info", 1500);
-    }
-
-    holdInterval = setInterval(() => {
-      holdSecondsLeft--;
-      if (holdSecondsLeft > 0) {
-        if (typeof showToast === "function") {
-          showToast(`⏳ Hold for ${holdSecondsLeft}s...`, "info", 900);
-        }
-      }
-    }, 1000);
-
     holdTimer = setTimeout(() => {
-      clearInterval(holdInterval);
       if (triggerEl) triggerEl.classList.remove("holding");
       if (navigator.vibrate) navigator.vibrate(200);
       openAdminPanel();
-      if (typeof showToast === "function") {
-        showToast("👑 Admin Control Panel Unlocked!", "success", 3000);
-      }
     }, 5000);
   }
 
@@ -76,10 +55,6 @@
     if (holdTimer) {
       clearTimeout(holdTimer);
       holdTimer = null;
-    }
-    if (holdInterval) {
-      clearInterval(holdInterval);
-      holdInterval = null;
     }
     const triggerEl = document.getElementById("brand-icon-trigger") || document.querySelector(".brand-icon-wrap");
     if (triggerEl) triggerEl.classList.remove("holding");
