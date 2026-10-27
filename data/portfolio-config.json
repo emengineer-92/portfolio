@@ -4,7 +4,7 @@
     "hero": true,
     "projects": true,
     "skills": true,
-    "terminal": true,
+    "terminal": false,
     "experience": true,
     "testimonials": true,
     "contact": true,
@@ -239,5 +239,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793077071992
+  "updatedAt": 1793077184828
 }
