@@ -887,22 +887,13 @@ window.toggleHorizontalNav = function(e) {
 window.toggleNavMenu = window.toggleHorizontalNav;
 
 function setupNavigation() {
-  const navContainer = document.getElementById("nav-horizontal-links");
-  const dotsBtn = document.getElementById("nav-dots-btn");
-  const dotsIcon = document.getElementById("nav-dots-icon");
   const navLinks = document.querySelectorAll(".nav-link");
 
   let isClickScrolling = false;
   let clickScrollTimeout = null;
 
-  const closeHorizontalMenu = () => {
-    if (!navContainer) return;
-    navContainer.classList.remove("open");
-    if (dotsBtn) dotsBtn.classList.remove("active");
-    if (dotsIcon) dotsIcon.className = "fas fa-ellipsis-v";
-  };
-
   // Click on any nav button: move blue line immediately and scroll to section
+  // Buttons are NEVER removed/hidden on click - ONLY the (X) button closes them
   navLinks.forEach(link => {
     link.addEventListener("click", (e) => {
       const href = link.getAttribute("href");
@@ -934,25 +925,8 @@ function setupNavigation() {
         clickScrollTimeout = setTimeout(() => {
           isClickScrolling = false;
         }, 900);
-
-        // Keep navigation buttons visible (do not remove/close on click)
       }
     });
-  });
-
-  // Close when clicking anywhere outside the navbar
-  document.addEventListener("click", (e) => {
-    const navbar = document.getElementById("site-navbar");
-    if (navbar && !navbar.contains(e.target)) {
-      closeHorizontalMenu();
-    }
-  });
-
-  // Close on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeHorizontalMenu();
-    }
   });
 
   // Active state highlighting on scroll
