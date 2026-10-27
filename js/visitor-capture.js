@@ -135,16 +135,88 @@ function submitVisitorAccess(isAllow) {
       VisitorState.visitorEmail = cleanEmail;
       saveVisitorLead(cleanEmail);
       VisitorState.updateNavbarBadge();
-      showToast(`🎉 Thank you sir! Welcome to exploring the career & technical journey of EM.Subhan Ali.`, "success");
-    } else {
-      showToast(`🎉 Thank you sir! Welcome to exploring the career & technical journey of EM.Subhan Ali.`, "success");
     }
-  } else {
-    // Rejected / Guest access
-    showToast(`✨ Thank you sir for visiting! Enjoy exploring the journey & history of EM.Subhan Ali.`, "info");
   }
 
+  // Close the modal popup
   closeVisitorModal();
+
+  // Launch the Redoyanul Haque opening animation (Fast 0-100% -> WELCOME -> Portfolio Open)
+  triggerRedoyanulStyleOpening();
+}
+
+// Redoyanul Haque Style Fast Opening Animation (0% -> 100% -> WELCOME -> Reveal)
+function triggerRedoyanulStyleOpening(onFinished) {
+  const loaderScreen = document.getElementById("opening-loader-screen");
+  const loadingWrap = document.getElementById("loading-wrap");
+  const loadingBtn = document.getElementById("loading-button");
+  const percentNum = document.getElementById("loading-percent-num");
+  const loadingHover = document.getElementById("loading-hover");
+
+  if (!loaderScreen) {
+    if (onFinished) onFinished();
+    return;
+  }
+
+  // Reset initial clean state
+  loaderScreen.style.display = "flex";
+  loaderScreen.classList.remove("hidden");
+  if (loadingWrap) loadingWrap.classList.remove("loading-clicked");
+  if (loadingBtn) loadingBtn.classList.remove("loading-complete");
+  if (percentNum) percentNum.textContent = "0%";
+
+  // Mouse hover glow movement
+  if (loadingWrap && loadingHover) {
+    loadingWrap.onmousemove = (e) => {
+      const rect = loadingWrap.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      loadingHover.style.left = `${x}px`;
+      loadingHover.style.top = `${y}px`;
+    };
+  }
+
+  // Fast smooth counter: 0% -> 100% in ~1100ms
+  let currentPercent = 0;
+  const duration = 1100;
+  const startTime = performance.now();
+
+  function updateCounter(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    // Smooth fast curve
+    const eased = 1 - Math.pow(1 - progress, 2.5);
+    currentPercent = Math.min(Math.floor(eased * 100), 100);
+    if (percentNum) percentNum.textContent = `${currentPercent}%`;
+
+    if (progress < 1) {
+      requestAnimationFrame(updateCounter);
+    } else {
+      // 100% reached
+      if (percentNum) percentNum.textContent = "100%";
+      setTimeout(() => {
+        // Step 1: Slide in WELCOME
+        if (loadingBtn) loadingBtn.classList.add("loading-complete");
+
+        setTimeout(() => {
+          // Step 2: Explode / Zoom expand
+          if (loadingWrap) loadingWrap.classList.add("loading-clicked");
+
+          setTimeout(() => {
+            // Step 3: Fade out loader screen and reveal portfolio
+            loaderScreen.classList.add("hidden");
+            setTimeout(() => {
+              loaderScreen.style.display = "none";
+              if (onFinished) onFinished();
+            }, 650);
+          }, 450);
+        }, 550);
+      }, 150);
+    }
+  }
+
+  requestAnimationFrame(updateCounter);
 }
 
 // Modal controls
