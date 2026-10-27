@@ -198,6 +198,34 @@
   ],
   "experiences": [
     {
+      "year": "2026",
+      "role": "New Role / Achievement",
+      "company": "Organization or University",
+      "period": "Present",
+      "description": "Milestone description..."
+    },
+    {
+      "year": "2026",
+      "role": "New Role / Achievement",
+      "company": "Organization or University",
+      "period": "Present",
+      "description": "Milestone description..."
+    },
+    {
+      "year": "2026",
+      "role": "New Role / Achievement",
+      "company": "Organization or University",
+      "period": "Present",
+      "description": "Milestone description..."
+    },
+    {
+      "year": "2026",
+      "role": "New Role / Achievement",
+      "company": "Organization or University",
+      "period": "Present",
+      "description": "Milestone description..."
+    },
+    {
       "year": "NOW",
       "role": "BS Computer Science (BS CS)",
       "company": "University CS Program Admission",
@@ -254,5 +282,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793075230699
+  "updatedAt": 1793075266678
 }
