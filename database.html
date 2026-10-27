@@ -642,6 +642,7 @@
                 <th>Rating</th>
                 <th>Review Quote</th>
                 <th>Date Added</th>
+                <th style="text-align: right;">Action</th>
               </tr>
             </thead>
             <tbody id="reviewsList">
@@ -796,12 +797,36 @@
               <td><span class="stars">${stars}</span></td>
               <td style="max-width: 360px; font-style: italic; color: #cbd5e1;">"${r.quote || ''}"</td>
               <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">${r.date || 'Recent'}</td>
+              <td style="text-align: right;">
+                <button class="btn btn-sm" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; border-radius: 8px; padding: 0.35rem 0.75rem; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;" onclick="deleteReview('${r.id}', '${encodeURIComponent(r.author || 'Client')}')">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+              </td>
             `;
             tbody.appendChild(tr);
           });
         }
       } catch (e) {
         console.error('Error loading reviews:', e);
+      }
+    }
+
+    async function deleteReview(id, authorEnc) {
+      const author = decodeURIComponent(authorEnc || 'Client');
+      if (!confirm(`Are you sure you want to permanently delete the review from "${author}"?`)) return;
+
+      try {
+        const res = await fetch('/api/reviews/' + encodeURIComponent(id), { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Review deleted successfully!');
+          loadReviews();
+          loadStats();
+        } else {
+          alert('Failed to delete review.');
+        }
+      } catch (e) {
+        console.error('Delete error:', e);
+        alert('Error communicating with server.');
       }
     }
 
