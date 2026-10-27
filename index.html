@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Stylesheet with Cache-Bust -->
-  <link rel="stylesheet" href="css/style.css?v=208">
+  <link rel="stylesheet" href="css/style.css?v=209">
 
   <style>
     /* Clean mouse pointer everywhere with ZERO follower circles */
@@ -459,36 +459,36 @@
        VISITOR WELCOME & ACCESS MODAL (AUTO POPUP)
        ========================================== -->
   <div class="modal-overlay" id="visitor-gate-modal">
-    <div class="visitor-modal-box" style="text-align: center; max-width: 500px;">
-      <button class="modal-close-btn" onclick="submitVisitorAccess(false)" aria-label="Close modal">
-        <i class="fas fa-times"></i>
+    <div class="visitor-modal-box visitor-gate-box" style="text-align: center;">
+      <button class="modal-close-btn" onclick="submitVisitorAccess(false)" aria-label="Close modal" style="top: 14px; right: 14px; width: 28px; height: 28px;">
+        <i class="fas fa-times" style="font-size: 0.85rem;"></i>
       </button>
 
-      <div class="modal-icon-badge" style="margin: 0 auto 18px auto; background: linear-gradient(135deg, #a855f7, #38bdf8); box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);">
-        <i class="fas fa-hand-sparkles" style="color: #fff; font-size: 1.5rem;"></i>
+      <div class="modal-icon-badge" style="margin: 0 auto 12px auto; width: 42px; height: 42px; font-size: 1.15rem; background: linear-gradient(135deg, #a855f7, #38bdf8); box-shadow: 0 0 20px rgba(168, 85, 247, 0.45); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
+        <i class="fas fa-hand-sparkles" style="color: #fff;"></i>
       </div>
 
-      <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: #fff; font-weight: 700;">
+      <h3 style="font-size: 1.22rem; margin-bottom: 6px; color: #fff; font-weight: 700; line-height: 1.35;">
         Thank You For Visiting <span style="background: linear-gradient(135deg, #38bdf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">EM.Subhan Ali</span>
       </h3>
-      <p style="font-size: 0.94rem; margin-bottom: 22px; color: #94a3b8; line-height: 1.6;">
+      <p style="font-size: 0.85rem; margin-bottom: 16px; color: #94a3b8; line-height: 1.5;">
         Kia aap apni email enter kar ke explore karna chahte hain ya direct guest ke tor par dekhna chahte hain?
       </p>
 
       <form id="visitor-gate-form" onsubmit="event.preventDefault(); submitVisitorAccess(true);">
-        <div class="form-group" style="margin-bottom: 20px; text-align: left;">
-          <label class="form-label" for="visitor-email-input" style="font-size: 0.85rem; color: #cbd5e1; display:flex; align-items:center; gap:6px; margin-bottom: 8px;">
-            <i class="fas fa-envelope" style="color: #c084fc;"></i> Enter Your Email <span style="font-size: 0.75rem; color: #64748b;">(Optional)</span>
+        <div class="form-group" style="margin-bottom: 14px; text-align: left;">
+          <label class="form-label" for="visitor-email-input" style="font-size: 0.78rem; color: #cbd5e1; display:flex; align-items:center; gap:6px; margin-bottom: 6px;">
+            <i class="fas fa-envelope" style="color: #c084fc;"></i> Enter Your Email <span style="font-size: 0.72rem; color: #64748b;">(Optional)</span>
           </label>
-          <input type="email" id="visitor-email-input" class="form-control" placeholder="name@company.com" autocomplete="email" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(192, 132, 252, 0.35); color: #fff; padding: 12px 16px; border-radius: 12px;">
+          <input type="email" id="visitor-email-input" class="form-control" placeholder="name@company.com" autocomplete="email" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(192, 132, 252, 0.35); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; width: 100%; box-sizing: border-box;">
         </div>
 
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <button type="button" class="btn btn-primary" onclick="submitVisitorAccess(true)" style="flex: 1; min-width: 170px; padding: 12px 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; font-weight: 600; cursor: pointer;">
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-primary" onclick="submitVisitorAccess(true)" style="flex: 1; padding: 10px 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; font-weight: 600; font-size: 0.84rem; cursor: pointer; white-space: nowrap;">
             <i class="fas fa-check-circle"></i> Allow &amp; Enter
           </button>
-          <button type="button" class="btn" onclick="submitVisitorAccess(false)" style="flex: 1; min-width: 170px; padding: 12px 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #cbd5e1; font-weight: 600; cursor: pointer;">
-            <i class="fas fa-arrow-right"></i> Reject / Guest
+          <button type="button" class="btn" onclick="submitVisitorAccess(false)" style="flex: 1; padding: 10px 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #cbd5e1; font-weight: 600; font-size: 0.84rem; cursor: pointer; white-space: nowrap;">
+            <i class="fas fa-arrow-right"></i> Guest Mode
           </button>
         </div>
       </form>
@@ -546,10 +546,10 @@
   </div>
 
   <!-- Scripts with Cache-Busters -->
-  <script src="js/data.js?v=208"></script>
-  <script src="js/visitor-capture.js?v=208"></script>
-  <script src="js/fluid-canvas.js?v=208"></script>
-  <script src="js/app.js?v=208"></script>
-  <script src="js/admin.js?v=208"></script>
+  <script src="js/data.js?v=209"></script>
+  <script src="js/visitor-capture.js?v=209"></script>
+  <script src="js/fluid-canvas.js?v=209"></script>
+  <script src="js/app.js?v=209"></script>
+  <script src="js/admin.js?v=209"></script>
 </body>
 </html>
