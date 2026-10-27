@@ -898,6 +898,37 @@
     if (saveTop) saveTop.addEventListener("click", handleSave);
     if (saveBottom) saveBottom.addEventListener("click", handleSave);
 
+    // Live Auto-Save & Instant DOM Refresh for all 9 Section Toggles
+    const secToggles = [
+      { id: "sec-toggle-hero", key: "hero", name: "Hero Section (#home)" },
+      { id: "sec-toggle-projects", key: "projects", name: "Projects Showcase (#projects)" },
+      { id: "sec-toggle-skills", key: "skills", name: "Technical Skills (#skills)" },
+      { id: "sec-toggle-terminal", key: "terminal", name: "SubhanOS Terminal (#terminal)" },
+      { id: "sec-toggle-experience", key: "experience", name: "Career Timeline (#experience)" },
+      { id: "sec-toggle-testimonials", key: "testimonials", name: "Client Reviews (#testimonials)" },
+      { id: "sec-toggle-contact", key: "contact", name: "Contact Section (#contact)" },
+      { id: "sec-toggle-visitorGate", key: "visitorGate", name: "Visitor Email Gate Popup" },
+      { id: "sec-toggle-fluidBg", key: "fluidBg", name: "Liquid Fluid Background Canvas" }
+    ];
+
+    secToggles.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) {
+        el.addEventListener("change", (e) => {
+          if (!adminConfig) adminConfig = getActiveConfig();
+          if (!adminConfig.sections) adminConfig.sections = {};
+          adminConfig.sections[item.key] = e.target.checked;
+          
+          saveActiveConfig(adminConfig);
+          if (window.refreshPortfolioFromConfig) {
+            window.refreshPortfolioFromConfig(adminConfig);
+          }
+          const stateLabel = e.target.checked ? "allowed / enabled" : "hidden / disabled";
+          showToast(`⚡ ${item.name} is now ${stateLabel}! Saved permanently.`, "success");
+        });
+      }
+    });
+
     // Avatar image preview & file upload
     const avatarInput = document.getElementById("adm-prof-avatar-url");
     const avatarPreview = document.getElementById("adm-avatar-preview");
