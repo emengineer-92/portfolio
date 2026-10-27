@@ -136,6 +136,9 @@
     if (tabId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
       loadAndRenderAdminInquiries();
     }
+    if (tabId === "tab-reviews" && typeof loadAndRenderAdminReviews === "function") {
+      loadAndRenderAdminReviews();
+    }
   };
 
   // 3. Inject Admin Panel Modal DOM into Page
@@ -192,6 +195,9 @@
             </button>
             <button type="button" class="admin-tab-btn" data-tab="tab-inquiries">
               <i class="fas fa-inbox"></i> Inquiries (<span id="admin-inquiries-counter">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" data-tab="tab-reviews">
+              <i class="fas fa-star" style="color: #facc15;"></i> Client Reviews (<span id="admin-reviews-counter">0</span>)
             </button>
             <button type="button" class="admin-tab-btn" data-tab="tab-backup">
               <i class="fas fa-database"></i> Backup &amp; Reset
@@ -947,6 +953,26 @@
             <div id="admin-inquiries-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
           </div>
 
+          <!-- TAB: CLIENT REVIEWS MANAGEMENT & DELETE -->
+          <div class="admin-tab-pane" id="tab-reviews">
+            <div class="admin-pane-intro">
+              <h3 style="color:#facc15; display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-star"></i> Public Client Reviews &amp; Testimonials
+              </h3>
+              <p>Yahan se aap kisi bhi galat, fake ya unwanted review ko permanent <strong>Delete</strong> kar sakte hain. Delete karne par ye portfolio aur cloud database dono se foran hat jayega.</p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h4 style="color:#fff; margin:0;"><i class="fas fa-comments"></i> Published Reviews (<span id="admin-reviews-title-count">0</span>)</h4>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-reviews" onclick="loadAndRenderAdminReviews()">
+                <i class="fas fa-sync-alt"></i> Refresh Reviews
+              </button>
+            </div>
+
+            <!-- Reviews List Container -->
+            <div id="admin-reviews-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+
         </div>
 
         <!-- Sticky Footer -->
@@ -1013,6 +1039,9 @@
         if (targetPane) targetPane.classList.add("active");
         if (targetId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
           loadAndRenderAdminInquiries();
+        }
+        if (targetId === "tab-reviews" && typeof loadAndRenderAdminReviews === "function") {
+          loadAndRenderAdminReviews();
         }
       });
     });
@@ -1383,6 +1412,9 @@
     renderChannelsAdminList();
     if (typeof loadAndRenderAdminInquiries === "function") {
       loadAndRenderAdminInquiries();
+    }
+    if (typeof loadAndRenderAdminReviews === "function") {
+      loadAndRenderAdminReviews();
     }
   }
 
@@ -1950,6 +1982,98 @@
               await deleteInquiryFromCloud(inq.id || idx);
             }
             loadAndRenderAdminInquiries();
+          }
+        });
+      }
+
+      container.appendChild(card);
+    });
+  };
+
+  // 9.3 Render Reviews Management in Admin Panel
+  window.loadAndRenderAdminReviews = async function() {
+    const container = document.getElementById("admin-reviews-list-container");
+    const counter = document.getElementById("admin-reviews-counter");
+    const titleCount = document.getElementById("admin-reviews-title-count");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div style="text-align:center; padding:24px; color:var(--text-muted);">
+        <i class="fas fa-spinner fa-spin"></i> Loading reviews from database...
+      </div>
+    `;
+
+    let reviews = [];
+    if (typeof fetchReviewsFromCloud === "function") {
+      reviews = await fetchReviewsFromCloud();
+    } else {
+      try {
+        const raw = localStorage.getItem("devsphere_public_reviews");
+        if (raw) reviews = JSON.parse(raw);
+      } catch (e) {}
+    }
+
+    if (!Array.isArray(reviews)) reviews = [];
+    if (counter) counter.textContent = reviews.length;
+    if (titleCount) titleCount.textContent = reviews.length;
+
+    if (reviews.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:36px 20px; background:rgba(255,255,255,0.02); border-radius:14px; border:1px dashed rgba(255,255,255,0.12);">
+          <i class="fas fa-comment-slash" style="font-size:2.5rem; color:var(--text-muted); opacity:0.5; margin-bottom:12px; display:block;"></i>
+          <h4 style="color:#fff; margin-bottom:6px;">No Reviews Published Yet</h4>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin:0; max-width:480px; margin:0 auto;">
+            Jab bhi koi visitor website par <strong>Leave a Review</strong> submit karega, unka review yahan show hoga. Aap kisi bhi galat review ko yahan se foran delete kar sakte hain.
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = "";
+    reviews.forEach((rev) => {
+      const card = document.createElement("div");
+      card.className = "review-admin-card glass-panel";
+      card.style.cssText = "background:rgba(15, 23, 42, 0.75); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:18px;";
+
+      const stars = "★".repeat(rev.rating || 5) + "☆".repeat(Math.max(0, 5 - (rev.rating || 5)));
+
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="${escapeHtml(rev.avatar || 'assets/avatar.jpg')}" alt="${escapeHtml(rev.author || 'Client')}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--color-cyan);" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=client'">
+            <div>
+              <h4 style="color:#fff; margin:0 0 2px 0; font-size:1.05rem;">
+                ${escapeHtml(rev.author || 'Anonymous')}
+              </h4>
+              <div style="font-size:0.8rem; color:var(--text-muted);">
+                ${escapeHtml(rev.title || 'Client')} • <span style="font-family:var(--font-mono);">${escapeHtml(rev.date || 'Recent')}</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span style="color:#facc15; font-size:1rem; letter-spacing:2px;">${stars}</span>
+            <button type="button" class="btn btn-sm rev-del-btn" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.4); color:#f87171; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+              <i class="fas fa-trash-alt"></i> Delete Review
+            </button>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.3); border-left:3px solid #facc15; padding:12px 14px; border-radius:0 8px 8px 0; font-size:0.9rem; color:#e2e8f0; line-height:1.5; font-style:italic;">
+          "${(escapeHtml(rev.quote || '')).replace(/\\n/g, '<br>')}"
+        </div>
+      `;
+
+      const delBtn = card.querySelector(".rev-del-btn");
+      if (delBtn) {
+        delBtn.addEventListener("click", async () => {
+          if (confirm(`Are you sure you want to delete this review by "${rev.author || 'Client'}"? It will be removed permanently from portfolio and cloud.`)) {
+            delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting...`;
+            delBtn.disabled = true;
+            if (typeof deleteReviewFromCloud === "function") {
+              await deleteReviewFromCloud(rev.id);
+            }
+            loadAndRenderAdminReviews();
           }
         });
       }
