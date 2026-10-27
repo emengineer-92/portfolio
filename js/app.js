@@ -458,30 +458,17 @@ async function renderTestimonialsInPortfolio(config) {
   if (!container) return;
 
   let reviews = [];
-
-  // 1. Fetch live reviews from persistent API so all visitors see reviews
-  try {
-    const res = await fetch('/api/reviews');
-    if (res.ok) {
-      reviews = await res.json();
-      if (Array.isArray(reviews) && reviews.length > 0) {
-        localStorage.setItem('devsphere_reviews_cache', JSON.stringify(reviews));
-      }
-    }
-  } catch (e) {
-    console.log("Loading reviews from cache or defaults...");
-  }
-
-  // 2. Fallback to localStorage cache or default config testimonials
-  if (!reviews || reviews.length === 0) {
+  if (typeof fetchReviewsFromCloud === "function") {
+    reviews = await fetchReviewsFromCloud();
+  } else {
     try {
-      const cached = localStorage.getItem('devsphere_reviews_cache');
-      if (cached) reviews = JSON.parse(cached);
+      const res = await fetch(`data/reviews.json?t=${Date.now()}`);
+      if (res.ok) reviews = await res.json();
     } catch (e) {}
   }
 
   if (!reviews || reviews.length === 0) {
-    reviews = config.testimonials || [];
+    reviews = config?.testimonials || [];
   }
 
   container.innerHTML = "";
@@ -618,31 +605,25 @@ function setupReviewForm() {
       date: new Date().toISOString().split('T')[0]
     };
 
-    // 1. Save to backend API so all users can see it
-    try {
-      await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newReview)
-      });
-    } catch (err) {
-      console.warn("Server review save note:", err);
+    // 1. Save permanently to GitHub Cloud and localStorage
+    if (typeof saveReviewToCloud === "function") {
+      saveReviewToCloud(newReview);
+    } else {
+      try {
+        let cached = [];
+        const raw = localStorage.getItem('devsphere_reviews_cache');
+        if (raw) cached = JSON.parse(raw);
+        cached.unshift(newReview);
+        localStorage.setItem('devsphere_reviews_cache', JSON.stringify(cached));
+      } catch (err) {}
     }
 
-    // 2. Cache in localStorage
-    try {
-      let cached = [];
-      const raw = localStorage.getItem('devsphere_reviews_cache');
-      if (raw) cached = JSON.parse(raw);
-      cached.unshift(newReview);
-      localStorage.setItem('devsphere_reviews_cache', JSON.stringify(cached));
-    } catch (err) {}
-
-    // 3. Prepend into DOM immediately
+    // 2. Prepend into DOM immediately
     const container = document.getElementById("testimonials-container");
     if (container) {
       const card = createReviewElement({ ...newReview, date: "Just now" }, Date.now());
       container.prepend(card);
+      container.scrollTop = 0;
     }
 
     showToast("⭐ Review published! Thank you for your feedback.");
