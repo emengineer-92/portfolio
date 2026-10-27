@@ -246,21 +246,19 @@ let githubSyncTimer = null;
 let isSyncingToGitHub = false;
 
 // Pushes admin edits from Mobile A straight to GitHub repository so Mobile B receives them!
-function syncConfigToGitHubCloud(configObj) {
+async function syncConfigToGitHubCloud(configObj, isImmediate = false) {
   if (typeof fetch === "undefined" || !GITHUB_SYNC.token) return;
 
-  clearTimeout(githubSyncTimer);
-  githubSyncTimer = setTimeout(async () => {
+  async function performSync() {
     if (isSyncingToGitHub) return;
     isSyncingToGitHub = true;
     try {
       const apiUrl = `https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/${GITHUB_SYNC.filePath}`;
 
-      // 1. Get current SHA on GitHub
+      // 1. Get current SHA on GitHub (only standard headers to prevent CORS preflight block)
       const getRes = await fetch(apiUrl + "?t=" + Date.now(), {
         headers: {
-          "Authorization": `Bearer ${GITHUB_SYNC.token}`,
-          "Accept": "application/vnd.github.v3+json"
+          "Authorization": "token " + GITHUB_SYNC.token
         }
       });
       let sha = null;
@@ -271,9 +269,7 @@ function syncConfigToGitHubCloud(configObj) {
 
       // 2. UTF-8 safe base64 encoding (supports emojis, Urdu, special chars)
       const jsonStr = JSON.stringify(configObj, null, 2);
-      const b64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode('0x' + p1);
-      }));
+      const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
 
       // 3. Commit to GitHub main branch
       const body = {
@@ -285,28 +281,36 @@ function syncConfigToGitHubCloud(configObj) {
       const putRes = await fetch(apiUrl, {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${GITHUB_SYNC.token}`,
-          "Accept": "application/vnd.github.v3+json",
+          "Authorization": "token " + GITHUB_SYNC.token,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
 
+      const putData = await putRes.json();
       if (putRes.ok) {
         console.log("☁️ Successfully published admin changes to GitHub Cloud!");
         if (typeof showToast === "function") {
-          showToast("☁️ Synced to Cloud! Changes are now live on all mobiles & devices.", "success");
+          showToast("☁️ Synced to Cloud! Changes are now live across all mobiles & devices.", "success");
         }
+      } else {
+        console.warn("GitHub Cloud Sync response:", putData);
       }
     } catch (e) {
-      console.warn("GitHub Cloud Sync note:", e);
+      console.warn("GitHub Cloud Sync error:", e);
     } finally {
       isSyncingToGitHub = false;
     }
-  }, 1000); // Debounce 1 second
+  }
+
+  clearTimeout(githubSyncTimer);
+  if (isImmediate) {
+    return performSync();
+  }
+  githubSyncTimer = setTimeout(performSync, 600);
 }
 
-function saveActiveConfig(newConfig) {
+function saveActiveConfig(newConfig, isImmediate = false) {
   try {
     if (!newConfig) return false;
     newConfig.updatedAt = Date.now();
@@ -322,7 +326,7 @@ function saveActiveConfig(newConfig) {
     }
 
     // 2. Real-time Cloud Sync: Commit directly to GitHub so ALL other mobiles and visitors see the changes!
-    syncConfigToGitHubCloud(newConfig);
+    syncConfigToGitHubCloud(newConfig, isImmediate);
 
     return true;
   } catch (e) {
@@ -354,7 +358,7 @@ function checkAndApplyCloudUpdates() {
       const merged = deepMergeConfig(DEFAULT_CONFIG, remoteCfg);
       merged.updatedAt = remoteTime;
       localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
-      if (window.refreshPortfolioFromConfig) {
+      if (typeof window !== "undefined" && window.refreshPortfolioFromConfig) {
         window.refreshPortfolioFromConfig(merged);
       }
       console.log("☁️ Updated portfolio from Admin Cloud broadcast (Mobile B synced).");
@@ -369,22 +373,42 @@ function checkAndApplyCloudUpdates() {
     })
     .then(cfg => processIncoming(cfg))
     .catch(() => {
-      // Priority 2: Fetch raw file from GitHub (instant, unbuffered, global)
-      fetch(GITHUB_SYNC.rawUrl + cacheBuster)
+      // Priority 2: Fetch directly from GitHub Contents API (Zero-cache, instant real-time data)
+      fetch(`https://api.github.com/repos/${GITHUB_SYNC.repo}/contents/${GITHUB_SYNC.filePath}${cacheBuster}`)
         .then(res => res.ok ? res.json() : null)
-        .then(cfg => {
-          if (cfg) processIncoming(cfg);
+        .then(data => {
+          if (data && data.content) {
+            try {
+              const rawStr = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+              const cfg = JSON.parse(rawStr);
+              processIncoming(cfg);
+              return;
+            } catch (e) {}
+          }
+          throw new Error("API rate-limit or no content");
         })
         .catch(() => {
-          // Priority 3: Fallback to relative path
-          fetch('./data/portfolio-config.json' + cacheBuster)
+          // Priority 3: Fetch raw file from GitHub
+          fetch(GITHUB_SYNC.rawUrl + cacheBuster)
             .then(res => res.ok ? res.json() : null)
             .then(cfg => {
               if (cfg) processIncoming(cfg);
             })
-            .catch(() => {});
+            .catch(() => {
+              // Priority 4: Fallback to relative path
+              fetch('./data/portfolio-config.json' + cacheBuster)
+                .then(res => res.ok ? res.json() : null)
+                .then(cfg => {
+                  if (cfg) processIncoming(cfg);
+                })
+                .catch(() => {});
+            });
         });
     });
+}
+
+if (typeof window !== "undefined") {
+  window.checkAndApplyCloudUpdates = checkAndApplyCloudUpdates;
 }
 
 // 1. Run sync check immediately on page load
@@ -398,8 +422,8 @@ if (typeof document !== "undefined") {
 }
 if (typeof window !== "undefined") {
   window.addEventListener("focus", checkAndApplyCloudUpdates);
-  // 3. Heartbeat check every 8 seconds so Mobile B updates live even without page refresh
-  setInterval(checkAndApplyCloudUpdates, 8000);
+  // 3. Heartbeat check every 6 seconds so Mobile B updates live even without page refresh
+  setInterval(checkAndApplyCloudUpdates, 6000);
 }
 
 function resetActiveConfig() {
