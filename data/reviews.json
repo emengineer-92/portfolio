@@ -9,6 +9,15 @@
     "date": "2026-10-24"
   },
   {
+    "id": "rev-2",
+    "author": "Elena Rostova",
+    "title": "Head of Engineering, Veloce Labs",
+    "quote": "Working with EM.Subhan ali was an absolute game changer for our enterprise platform. His mastery over Next.js, Node.js, and cloud systems made him our most trusted senior full-stack developer.",
+    "rating": 5,
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    "date": "2026-10-02"
+  },
+  {
     "id": "rev-1",
     "author": "Marcus Vance",
     "title": "CTO, Horizon Spatial Tech",
@@ -18,12 +27,21 @@
     "date": "2026-09-15"
   },
   {
-    "id": "rev-2",
-    "author": "Elena Rostova",
-    "title": "Head of Engineering, Veloce Labs",
-    "quote": "Working with EM.Subhan ali was an absolute game changer for our enterprise platform. His mastery over Next.js, Node.js, and cloud systems made him our most trusted senior full-stack developer.",
+    "id": "rev-3",
+    "author": "Engr. Tariq Mehmood",
+    "title": "Senior Tech Consultant & Academic Advisor",
+    "quote": "Subhan's rapid progression from ICS and creative multimedia into robust full-stack architecture and robotics engineering is extraordinary. A truly passionate Pakistani developer with tremendous technical versatility.",
+    "rating": 5,
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    "date": "2026-08-20"
+  },
+  {
+    "id": "rev-4",
+    "author": "Alexander Vance",
+    "title": "Managing Director, Global Ventures",
+    "quote": "The combination of full-stack web development, hands-on robotics passion, and cutting-edge 3D video editing skills makes Subhan uniquely qualified for ambitious tech ventures.",
     "rating": 5,
     "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
-    "date": "2026-10-02"
+    "date": "2026-08-05"
   }
 ]
