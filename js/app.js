@@ -841,16 +841,45 @@ function setupContactForm() {
   const form = document.getElementById("contact-inquiry-form");
   if (!form) return;
 
+  const phoneInput = document.getElementById("contact-phone");
+  const phoneErr = document.getElementById("contact-phone-error");
+
+  // Real-time strictly 11 digits numerical filter
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "").slice(0, 11);
+      if (phoneErr) {
+        if (phoneInput.value.length > 0 && phoneInput.value.length !== 11) {
+          phoneErr.style.display = "block";
+          phoneInput.style.borderColor = "#ef4444";
+        } else {
+          phoneErr.style.display = "none";
+          phoneInput.style.borderColor = "";
+        }
+      }
+    });
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const name = document.getElementById("contact-name").value.trim();
-    const phoneInput = document.getElementById("contact-phone");
-    const phone = phoneInput ? phoneInput.value.trim() : "";
+    const cleanPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, "") : "";
     const projectType = document.getElementById("contact-type").value;
     const message = document.getElementById("contact-message").value.trim();
 
-    if (!name || !phone) return;
+    // Strict 11-digit phone check
+    if (!name || !cleanPhone || cleanPhone.length !== 11) {
+      if (phoneErr) phoneErr.style.display = "block";
+      if (phoneInput) {
+        phoneInput.style.borderColor = "#ef4444";
+        phoneInput.focus();
+      }
+      return;
+    }
+
+    if (phoneErr) phoneErr.style.display = "none";
+    if (phoneInput) phoneInput.style.borderColor = "";
 
     const btn = document.getElementById("contact-submit-btn") || form.querySelector("button[type='submit']");
     const origHtml = btn.innerHTML;
@@ -868,7 +897,7 @@ function setupContactForm() {
     const inquiryObj = {
       id: "inq_" + Date.now(),
       name,
-      phone,
+      phone: cleanPhone,
       projectType,
       message,
       targetAdminWhatsApp: formattedAdminNum,
@@ -886,7 +915,8 @@ function setupContactForm() {
       body: JSON.stringify(inquiryObj)
     }).catch(() => {});
 
-    // 2. Dispatch inquiry email & webhook to Subhan's verified email
+    // 2. Dispatch structured inquiry email to Subhan's verified email
+    // Email par is tarha aayega: Name, Phone (11 digits), Jis Kaam Ke Liye Apply Kiya, aur Bio
     const emailVal = config.socials?.email || config.adminEmail || "mirzasubhanali449@gmail.com";
     fetch(`https://formsubmit.co/ajax/${encodeURIComponent(emailVal)}`, {
       method: "POST",
@@ -895,18 +925,18 @@ function setupContactForm() {
         "Accept": "application/json"
       },
       body: JSON.stringify({
-        _subject: `💼 New Client Project Inquiry from ${name} (${phone})`,
-        Client_Name: name,
-        Client_Phone: phone,
-        Discipline: projectType,
-        Project_Details: message,
-        Target_Admin_WhatsApp: formattedAdminNum,
-        Time: timestamp
+        _subject: `💼 New Inquiry: ${name} (${cleanPhone}) - ${projectType}`,
+        _template: "table",
+        "Client Name": name,
+        "Phone Number": cleanPhone,
+        "Applied For Service / Work": projectType,
+        "Client Bio & Project Details": message,
+        "Date & Time": timestamp
       })
     }).catch(() => {});
 
     // 3. Silent WhatsApp Notification Gateway ping
-    const waText = encodeURIComponent(`💼 *New Client Inquiry!*\n\n👤 *Client:* ${name}\n📞 *Phone:* ${phone}\n🎯 *Category:* ${projectType}\n📝 *Details:* ${message}\n⏰ *Time:* ${timestamp}`);
+    const waText = encodeURIComponent(`💼 *New Client Inquiry!*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${cleanPhone}\n🎯 *Applied For:* ${projectType}\n📝 *Bio:* ${message}\n⏰ *Time:* ${timestamp}`);
     fetch(`https://api.callmebot.com/whatsapp.php?phone=${formattedAdminNum}&text=${waText}&apikey=free`, { mode: 'no-cors' }).catch(() => {});
 
     // 4. Clean professional UI completion for visitor (NO alert, NO popup, NO whatsapp reveal)
