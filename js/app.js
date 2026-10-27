@@ -842,9 +842,8 @@ function setupContactForm() {
   if (!form) return;
 
   const phoneInput = document.getElementById("contact-phone");
-  const phoneErr = document.getElementById("contact-phone-error");
 
-  // Real-time strictly 11 digits numerical filter & hard limitation
+  // Real-time strictly 11 digits numerical filter & hard limitation (Silent, no warning text)
   if (phoneInput) {
     phoneInput.addEventListener("keydown", (e) => {
       if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End', 'Enter'].includes(e.key)) return;
@@ -870,20 +869,6 @@ function setupContactForm() {
         phoneInput.value = phoneInput.value.slice(0, 11);
       }
       phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "");
-
-      if (phoneErr) {
-        if (phoneInput.value.length > 0 && phoneInput.value.length < 11) {
-          phoneErr.style.display = "block";
-          phoneErr.innerHTML = `<i class="fas fa-info-circle"></i> ${phoneInput.value.length}/11 hindse likhe hain. Mukammal 11 hindse lazmi hain.`;
-          phoneInput.style.borderColor = "#f59e0b";
-        } else if (phoneInput.value.length === 11) {
-          phoneErr.style.display = "none";
-          phoneInput.style.borderColor = "var(--color-mint)";
-        } else {
-          phoneErr.style.display = "none";
-          phoneInput.style.borderColor = "";
-        }
-      }
     });
   }
 
@@ -897,19 +882,11 @@ function setupContactForm() {
 
     // Strict 11-digit phone check
     if (!name || !cleanPhone || cleanPhone.length !== 11) {
-      if (phoneErr) {
-        phoneErr.style.display = "block";
-        phoneErr.innerHTML = `<i class="fas fa-exclamation-circle"></i> Phone number strictly 11 hindso ka hona lazmi hai (e.g. 03446266246).`;
-      }
       if (phoneInput) {
-        phoneInput.style.borderColor = "#ef4444";
         phoneInput.focus();
       }
       return;
     }
-
-    if (phoneErr) phoneErr.style.display = "none";
-    if (phoneInput) phoneInput.style.borderColor = "";
 
     const btn = document.getElementById("contact-submit-btn") || form.querySelector("button[type='submit']");
     const origHtml = btn.innerHTML;
