@@ -259,52 +259,47 @@ function saveActiveConfig(newConfig) {
 (function autoSyncConfig() {
   if (typeof fetch === "undefined") return;
 
-  function applyRemoteConfig(remoteConfig) {
-    if (!remoteConfig || typeof remoteConfig !== "object" || !remoteConfig.profile) return;
-    
-    const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
-    let localConfig = null;
-    try {
-      if (localSaved) localConfig = JSON.parse(localSaved);
-    } catch (e) {}
+  const localSaved = localStorage.getItem(STORAGE_CONFIG_KEY);
+  let localConfig = null;
+  try {
+    if (localSaved) localConfig = JSON.parse(localSaved);
+  } catch (e) {}
 
-    const localTime = (localConfig && localConfig.updatedAt) ? Number(localConfig.updatedAt) : 0;
-    const remoteTime = (remoteConfig && remoteConfig.updatedAt) ? Number(remoteConfig.updatedAt) : 1000;
-
-    // If user has NO local edits yet, or remote data is strictly newer:
-    if (!localSaved || (!localTime && remoteTime) || remoteTime > localTime) {
-      const merged = deepMergeConfig(DEFAULT_CONFIG, remoteConfig);
-      merged.updatedAt = remoteTime;
-      localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
-      if (window.refreshPortfolioFromConfig) {
-        window.refreshPortfolioFromConfig(merged);
-      }
-    } 
-    // If local browser has newer admin edits than the server, push them to SQLite
-    else if (localTime > remoteTime && localConfig && localConfig.profile) {
-      fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(localConfig)
-      }).catch(() => {});
-    }
+  // CRITICAL RULE: If the user/admin has already customized their portfolio in this browser,
+  // NEVER overwrite their localStorage! Their changes must remain permanent across refreshes.
+  if (localConfig && localConfig.profile) {
+    // If running on a local server, push localConfig to SQLite so disk database stays in sync
+    fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(localConfig)
+    }).catch(() => {});
+    return;
   }
 
-  // 1. Try /api/config (localhost / Cloudflare Tunnel)
+  // Only if this is a fresh browser with NO local customization yet, hydrate from server or static JSON
   fetch('/api/config')
     .then(res => {
       if (!res.ok) throw new Error("HTTP " + res.status);
       return res.json();
     })
     .then(serverConfig => {
-      applyRemoteConfig(serverConfig);
+      if (serverConfig && serverConfig.profile) {
+        const merged = deepMergeConfig(DEFAULT_CONFIG, serverConfig);
+        localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(merged);
+      }
     })
     .catch(() => {
-      // 2. If /api/config returns 404 (e.g. GitHub Pages), fetch static config
+      // Fallback for static hosting like GitHub Pages on first visit
       fetch('./data/portfolio-config.json')
         .then(res => res.ok ? res.json() : null)
         .then(staticConfig => {
-          if (staticConfig) applyRemoteConfig(staticConfig);
+          if (staticConfig && staticConfig.profile) {
+            const merged = deepMergeConfig(DEFAULT_CONFIG, staticConfig);
+            localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(merged));
+            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(merged);
+          }
         })
         .catch(() => {});
     });
