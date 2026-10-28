@@ -161,7 +161,7 @@
           </div>
           <div class="admin-header-btns">
             <button type="button" class="btn btn-primary btn-sm" id="admin-save-btn-top">
-              <i class="fas fa-cloud-upload-alt"></i> Save & Sync All Mobiles
+              <i class="fas fa-save"></i> Save
             </button>
             <button type="button" class="admin-close-x" onclick="closeAdminPanel()" title="Close Admin Panel">
               <i class="fas fa-times"></i>
@@ -169,47 +169,59 @@
           </div>
         </div>
 
-        <!-- Navigation Tabs with Horizontal Scroll Controls -->
-        <div class="admin-tabs-wrapper">
-          <button type="button" class="admin-tab-scroll-arrow left" id="admin-tab-scroll-left" title="Scroll Left (Previous Tabs)">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="admin-tabs-nav" id="admin-tabs-nav">
-            <button type="button" class="admin-tab-btn active" data-tab="tab-visual-map">
-              <i class="fas fa-map-marked-alt"></i> 📍 Kis Jagha Add Hoga (Visual Guide)
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-sections">
-              <i class="fas fa-toggle-on"></i> Enable / Disable Sections
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-profile">
-              <i class="fas fa-user-edit"></i> Edit Information
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-projects">
-              <i class="fas fa-cubes"></i> Manage Projects (<span id="admin-proj-counter">5</span>)
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-skills-exp">
-              <i class="fas fa-layer-group"></i> Skills &amp; Timeline
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-channels">
-              <i class="fas fa-share-alt"></i> Direct Channels (<span id="admin-channel-counter">2</span>)
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-inquiries">
-              <i class="fas fa-inbox"></i> Inquiries (<span id="admin-inquiries-counter">0</span>)
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-reviews">
-              <i class="fas fa-star" style="color: #facc15;"></i> Client Reviews (<span id="admin-reviews-counter">0</span>)
-            </button>
-            <button type="button" class="admin-tab-btn" data-tab="tab-backup">
-              <i class="fas fa-database"></i> Backup &amp; Reset
-            </button>
-          </div>
-          <button type="button" class="admin-tab-scroll-arrow right" id="admin-tab-scroll-right" title="Scroll Right (More Tabs)">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
+        <!-- Admin Main Dual-Pane Layout: Sidebar Menu + Tab Content Panes -->
+        <div class="admin-modal-layout">
+          <!-- Left Sidebar Menu -->
+          <aside class="admin-sidebar-menu">
+            <div class="admin-menu-header">
+              <i class="fas fa-th-large"></i> <span>All Modules</span>
+            </div>
+            <nav class="admin-menu-nav" id="admin-menu-nav">
+              <button type="button" class="admin-menu-item active" data-tab="tab-visual-map">
+                <span class="admin-menu-icon"><i class="fas fa-map-marked-alt"></i></span>
+                <span class="admin-menu-text">Visual Guide</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-sections">
+                <span class="admin-menu-icon"><i class="fas fa-toggle-on"></i></span>
+                <span class="admin-menu-text">Sections Toggle</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-profile">
+                <span class="admin-menu-icon"><i class="fas fa-user-edit"></i></span>
+                <span class="admin-menu-text">Edit Information</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-projects">
+                <span class="admin-menu-icon"><i class="fas fa-cubes"></i></span>
+                <span class="admin-menu-text">Manage Projects</span>
+                <span class="admin-menu-badge" id="admin-proj-counter">5</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-skills-exp">
+                <span class="admin-menu-icon"><i class="fas fa-layer-group"></i></span>
+                <span class="admin-menu-text">Skills &amp; Timeline</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-channels">
+                <span class="admin-menu-icon"><i class="fas fa-share-alt"></i></span>
+                <span class="admin-menu-text">Direct Channels</span>
+                <span class="admin-menu-badge" id="admin-channel-counter">2</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-inquiries">
+                <span class="admin-menu-icon"><i class="fas fa-inbox"></i></span>
+                <span class="admin-menu-text">Inquiries</span>
+                <span class="admin-menu-badge" id="admin-inquiries-counter">0</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-reviews">
+                <span class="admin-menu-icon"><i class="fas fa-star" style="color: #facc15;"></i></span>
+                <span class="admin-menu-text">Client Reviews</span>
+                <span class="admin-menu-badge" id="admin-reviews-counter">0</span>
+              </button>
+              <button type="button" class="admin-menu-item" data-tab="tab-backup">
+                <span class="admin-menu-icon"><i class="fas fa-database"></i></span>
+                <span class="admin-menu-text">Backup &amp; Reset</span>
+              </button>
+            </nav>
+          </aside>
 
-        <!-- Scrollable Tab Content Container -->
-        <div class="admin-modal-body">
+          <!-- Scrollable Tab Content Container -->
+          <div class="admin-modal-body">
           
           <!-- TAB 0: VISUAL PLACEMENT MAP (Konsa Option Kis Jagha Add Hoga) -->
           <div class="admin-tab-pane active" id="tab-visual-map">
@@ -669,128 +681,6 @@
               </button>
             </div>
 
-            <!-- Add / Edit Project Form Box -->
-            <div id="admin-project-form-wrap" class="admin-subform-box" style="display: none;">
-              <div class="subform-header">
-                <h4 id="proj-form-title"><i class="fas fa-folder-plus"></i> Add New Project</h4>
-                <button type="button" class="admin-btn-text" id="btn-cancel-project-form"><i class="fas fa-times"></i> Cancel</button>
-              </div>
-
-              <!-- Placement Indicator Banner -->
-              <div class="proj-placement-banner">
-                <div class="placement-banner-icon"><i class="fas fa-bullseye"></i></div>
-                <div>
-                  <strong>Kis Jagha Add Hoga (Website Placement):</strong>
-                  <p>Yeh project portfolio ke <strong>Featured Projects Showcase Grid (#projects)</strong> mein ek interactive glass card ke tor par add hoga.</p>
-                </div>
-              </div>
-
-              <div class="admin-form-grid">
-                <div class="form-group">
-                  <label class="form-label" for="proj-input-placement">Display Position (Order / Placement)</label>
-                  <div class="field-placement-tag"><i class="fas fa-sort-amount-up"></i> Projects Grid mein Kahan Show Hoga?</div>
-                  <select id="proj-input-placement" class="form-control" style="background: var(--bg-input);">
-                    <option value="top">Top of Showcase (Sab se pehle show ho)</option>
-                    <option value="normal" selected>Normal Order (Chronological)</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="proj-input-category">Category / Discipline</label>
-                  <div class="field-placement-tag"><i class="fas fa-tag"></i> Project Image ke ooper Glowing Badge</div>
-                  <select id="proj-input-category" class="form-control" style="background: var(--bg-input);">
-                    <option value="Full-Stack Web Development (2025–2026)">Full-Stack Web Development (2025–2026)</option>
-                    <option value="Robotics & Hardware Engineering">Robotics & Hardware Engineering</option>
-                    <option value="Business Ideation & Tech Ventures">Business Ideation & Tech Ventures</option>
-                    <option value="3D Animation & CGI Design">3D Animation & CGI Design</option>
-                    <option value="Digital Media, Photoshop & Video Editing">Digital Media, Photoshop & Video Editing</option>
-                    <option value="Mobile Applications (iOS & Android)">Mobile Applications (iOS & Android)</option>
-                    <option value="Electronics & Embedded IoT">Electronics & Embedded IoT</option>
-                  </select>
-                </div>
-
-                <div class="form-group form-col-full">
-                  <label class="form-label" for="proj-input-title">Project Title *</label>
-                  <div class="field-placement-tag"><i class="fas fa-heading"></i> Project Card ka Main Headline Title</div>
-                  <input type="text" id="proj-input-title" class="form-control" placeholder="e.g. Nexora — Full-Stack Cloud Architecture" required>
-                </div>
-
-                <div class="form-group form-col-full">
-                  <label class="form-label" for="proj-input-stats">Highlights / Stats Pill</label>
-                  <div class="field-placement-tag"><i class="fas fa-chart-line"></i> Description ke ooper Glowing Feature Tag</div>
-                  <input type="text" id="proj-input-stats" class="form-control" placeholder="e.g. Modern Responsive UI • End-to-End Stack">
-                </div>
-
-                <div class="form-group form-col-full">
-                  <label class="form-label" for="proj-input-desc">Project Description *</label>
-                  <div class="field-placement-tag"><i class="fas fa-align-left"></i> Project Card ka Summary Paragraph</div>
-                  <textarea id="proj-input-desc" class="form-control" rows="3" placeholder="Explain the architecture, objectives, and technology used..." required></textarea>
-                </div>
-
-                <div class="form-group form-col-full">
-                  <label class="form-label" for="proj-input-tags">Tech Stack Tags (Comma-separated)</label>
-                  <div class="field-placement-tag"><i class="fas fa-tags"></i> Card ke Bottom par Tech Pills</div>
-                  <input type="text" id="proj-input-tags" class="form-control" placeholder="React, Node.js, Express, PostgreSQL, REST API">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="proj-input-live">Live Demo URL</label>
-                  <div class="field-placement-tag"><i class="fas fa-external-link-alt"></i> Blue "Live Demo" Button ka link</div>
-                  <input type="text" id="proj-input-live" class="form-control" placeholder="https://example.com or #">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="proj-input-code">GitHub / Source Code URL</label>
-                  <div class="field-placement-tag"><i class="fab fa-github"></i> "Source Code" Button ka link</div>
-                  <input type="text" id="proj-input-code" class="form-control" placeholder="https://github.com/...">
-                </div>
-
-                <!-- Image URL or Upload -->
-                <div class="form-group form-col-full">
-                  <label class="form-label">Project Cover Image</label>
-                  <div class="field-placement-tag"><i class="fas fa-image"></i> Project Card ki 16:9 Cover Picture</div>
-                  <div class="avatar-upload-row">
-                    <div class="avatar-preview-box" style="width: 110px; height: 65px; border-radius: 8px;">
-                      <img id="proj-img-preview" src="assets/project1.jpg" alt="Preview" style="object-fit: cover;">
-                    </div>
-                    <div style="flex: 1;">
-                      <input type="text" id="proj-input-image" class="form-control" placeholder="assets/project1.jpg or image URL" style="margin-bottom: 6px;">
-                      <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;">
-                        <i class="fas fa-image"></i> Pick Image from PC
-                        <input type="file" id="proj-file-input" accept="image/*" style="display: none;">
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Toggles -->
-                <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
-                  <label class="admin-switch">
-                    <input type="checkbox" id="proj-input-enabled" checked>
-                    <span class="slider"></span>
-                  </label>
-                  <span style="font-size: 0.9rem; color: #fff;">Visible on Portfolio</span>
-                </div>
-
-                <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
-                  <label class="admin-switch">
-                    <input type="checkbox" id="proj-input-featured" checked>
-                    <span class="slider"></span>
-                  </label>
-                  <span style="font-size: 0.9rem; color: #fff;">Mark as Featured</span>
-                </div>
-
-                <div class="form-col-full" style="display: flex; gap: 10px; margin-top: 10px;">
-                  <button type="button" class="btn btn-primary" id="btn-save-project-item">
-                    <i class="fas fa-check"></i> Save Project
-                  </button>
-                  <button type="button" class="btn btn-secondary" id="btn-cancel-project-item">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-
             <!-- Existing Projects List Cards -->
             <div id="admin-projects-list" class="admin-projects-cards-list">
               <!-- Dynamically populated -->
@@ -810,7 +700,7 @@
                   <h4 style="color:#fff; font-size:1.1rem;"><i class="fas fa-sliders-h"></i> Technical Skills Matrix</h4>
                   <div class="field-placement-tag"><i class="fas fa-map-pin"></i> Website Par: Section #skills (Core Technical Arsenal)</div>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-skill-row"><i class="fas fa-plus"></i> Add Skill</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-add-skill-row"><i class="fas fa-plus-circle"></i> Add New Skill</button>
               </div>
               <div id="admin-skills-list" class="admin-sublist-rows">
                 <!-- Dynamically populated -->
@@ -973,7 +863,8 @@
             <div id="admin-reviews-list-container" style="display:flex; flex-direction:column; gap:12px;"></div>
           </div>
 
-        </div>
+          </div> <!-- /.admin-modal-body -->
+        </div> <!-- /.admin-modal-layout -->
 
         <!-- Sticky Footer -->
         <div class="admin-modal-footer">
@@ -986,8 +877,202 @@
               Close
             </button>
             <button type="button" class="btn btn-primary" id="admin-save-btn-bottom">
-              <i class="fas fa-cloud-upload-alt"></i> Save & Sync All Mobiles
+              <i class="fas fa-save"></i> Save
             </button>
+          </div>
+        </div>
+      </div> <!-- /.admin-modal-box -->
+
+      <!-- ==============================================================
+           CENTERED POPUP MODAL: ADD / EDIT PROJECT
+           ============================================================== -->
+      <div id="admin-project-popup-modal" class="admin-submodal-overlay">
+        <div class="admin-submodal-box glass-panel">
+          <div class="admin-submodal-header">
+            <h3 id="proj-form-title"><i class="fas fa-folder-plus"></i> Add New Project</h3>
+            <button type="button" class="admin-close-x" id="btn-cancel-project-form" title="Close"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="admin-submodal-body">
+            <div class="proj-placement-banner" style="margin-bottom:18px;">
+              <div class="placement-banner-icon"><i class="fas fa-bullseye"></i></div>
+              <div>
+                <strong>Kis Jagha Add Hoga (Website Placement):</strong>
+                <p>Yeh project portfolio ke <strong>Featured Projects Showcase Grid (#projects)</strong> mein ek interactive glass card ke tor par add hoga.</p>
+              </div>
+            </div>
+
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label" for="proj-input-placement">Display Position (Order / Placement)</label>
+                <div class="field-placement-tag"><i class="fas fa-sort-amount-up"></i> Grid mein Kahan Show Hoga?</div>
+                <select id="proj-input-placement" class="form-control" style="background: var(--bg-input);">
+                  <option value="top">Top of Showcase (Sab se pehle show ho)</option>
+                  <option value="normal" selected>Normal Order (Chronological)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="proj-input-category">Category / Discipline</label>
+                <div class="field-placement-tag"><i class="fas fa-tag"></i> Glowing Badge</div>
+                <select id="proj-input-category" class="form-control" style="background: var(--bg-input);">
+                  <option value="Full-Stack Web Development (2025–2026)">Full-Stack Web Development (2025–2026)</option>
+                  <option value="Robotics & Hardware Engineering">Robotics & Hardware Engineering</option>
+                  <option value="Business Ideation & Tech Ventures">Business Ideation & Tech Ventures</option>
+                  <option value="3D Animation & CGI Design">3D Animation & CGI Design</option>
+                  <option value="Digital Media, Photoshop & Video Editing">Digital Media, Photoshop & Video Editing</option>
+                  <option value="Mobile Applications (iOS & Android)">Mobile Applications (iOS & Android)</option>
+                  <option value="Electronics & Embedded IoT">Electronics & Embedded IoT</option>
+                </select>
+              </div>
+
+              <div class="form-group form-col-full">
+                <label class="form-label" for="proj-input-title">Project Title *</label>
+                <input type="text" id="proj-input-title" class="form-control" placeholder="e.g. Nexora — Full-Stack Cloud Architecture" required>
+              </div>
+
+              <div class="form-group form-col-full">
+                <label class="form-label" for="proj-input-stats">Highlights / Stats Pill</label>
+                <input type="text" id="proj-input-stats" class="form-control" placeholder="e.g. Modern Responsive UI • End-to-End Stack">
+              </div>
+
+              <div class="form-group form-col-full">
+                <label class="form-label" for="proj-input-desc">Project Description *</label>
+                <textarea id="proj-input-desc" class="form-control" rows="3" placeholder="Explain the architecture, objectives, and technology used..." required></textarea>
+              </div>
+
+              <div class="form-group form-col-full">
+                <label class="form-label" for="proj-input-tags">Tech Stack Tags (Comma-separated)</label>
+                <input type="text" id="proj-input-tags" class="form-control" placeholder="React, Node.js, Express, PostgreSQL, REST API">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="proj-input-live">Live Demo URL</label>
+                <input type="text" id="proj-input-live" class="form-control" placeholder="https://example.com or #">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="proj-input-code">GitHub / Source Code URL</label>
+                <input type="text" id="proj-input-code" class="form-control" placeholder="https://github.com/...">
+              </div>
+
+              <!-- Image URL or Upload -->
+              <div class="form-group form-col-full">
+                <label class="form-label">Project Cover Image</label>
+                <div class="avatar-upload-row">
+                  <div class="avatar-preview-box" style="width: 110px; height: 65px; border-radius: 8px;">
+                    <img id="proj-img-preview" src="assets/project1.jpg" alt="Preview" style="object-fit: cover;">
+                  </div>
+                  <div style="flex: 1;">
+                    <input type="text" id="proj-input-image" class="form-control" placeholder="assets/project1.jpg or image URL" style="margin-bottom: 6px;">
+                    <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;">
+                      <i class="fas fa-image"></i> Pick Image from PC
+                      <input type="file" id="proj-file-input" accept="image/*" style="display: none;">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Toggles -->
+              <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+                <label class="admin-switch">
+                  <input type="checkbox" id="proj-input-enabled" checked>
+                  <span class="slider"></span>
+                </label>
+                <span style="font-size: 0.9rem; color: #fff;">Visible on Portfolio</span>
+              </div>
+
+              <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+                <label class="admin-switch">
+                  <input type="checkbox" id="proj-input-featured" checked>
+                  <span class="slider"></span>
+                </label>
+                <span style="font-size: 0.9rem; color: #fff;">Mark as Featured</span>
+              </div>
+            </div>
+          </div>
+          <div class="admin-submodal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-project-item">Cancel</button>
+            <button type="button" class="btn btn-primary" id="btn-save-project-item">
+              <i class="fas fa-check"></i> Save Project
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           CENTERED POPUP MODAL: ADD NEW SKILL
+           ============================================================== -->
+      <div id="admin-skill-popup-modal" class="admin-submodal-overlay">
+        <div class="admin-submodal-box glass-panel" style="max-width:520px;">
+          <div class="admin-submodal-header">
+            <h3><i class="fas fa-layer-group" style="color:var(--color-cyan);"></i> Add New Technical Skill</h3>
+            <button type="button" class="admin-close-x" id="btn-close-skill-modal" title="Close"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="admin-submodal-body">
+            <div class="field-placement-tag" style="margin-bottom:14px;"><i class="fas fa-map-pin"></i> Website Par: Section #skills (Technical Arsenal)</div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label" for="skill-modal-name">Skill Name *</label>
+              <input type="text" id="skill-modal-name" class="form-control" placeholder="e.g. Next.js, Python, ROS 2, Three.js">
+            </div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <label class="form-label" for="skill-modal-level" style="margin:0;">Proficiency Level</label>
+                <span id="skill-modal-level-val" style="font-family:var(--font-mono); color:var(--color-cyan); font-weight:700;">90%</span>
+              </div>
+              <input type="range" id="skill-modal-level" min="10" max="100" value="90" style="width:100%; accent-color:var(--color-cyan);">
+            </div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label" for="skill-modal-cat">Category / Discipline</label>
+              <select id="skill-modal-cat" class="form-control" style="background:var(--bg-input);">
+                <option value="web" selected>Web Development &amp; Cloud</option>
+                <option value="robotics">Robotics &amp; Hardware</option>
+                <option value="cs">Computer Science &amp; DSA</option>
+                <option value="3d">3D Animation &amp; CGI</option>
+                <option value="media">Media, Photoshop &amp; Video</option>
+                <option value="office">Office &amp; Management</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Skill Icon Preset</label>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="skill-preset-icons-wrap">
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn active" data-icon="fas fa-code"><i class="fas fa-code"></i> Code</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fab fa-react"><i class="fab fa-react"></i> React</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fab fa-js"><i class="fab fa-js"></i> JS</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fab fa-python"><i class="fab fa-python"></i> Python</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fas fa-robot"><i class="fas fa-robot"></i> Robot</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fas fa-microchip"><i class="fas fa-microchip"></i> Chip</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fas fa-cubes"><i class="fas fa-cubes"></i> 3D</button>
+                <button type="button" class="btn btn-secondary btn-sm skill-preset-btn" data-icon="fas fa-database"><i class="fas fa-database"></i> DB</button>
+              </div>
+              <input type="hidden" id="skill-modal-icon" value="fas fa-code">
+            </div>
+          </div>
+          <div class="admin-submodal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-skill-modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="btn-save-skill-modal">
+              <i class="fas fa-plus-circle"></i> Add Skill
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           CENTERED CONFIRMATION / PERMISSION DIALOG (Custom, Replaces Browser Confirm)
+           ============================================================== -->
+      <div id="admin-center-confirm-dialog" class="admin-confirm-overlay">
+        <div class="admin-confirm-box glass-panel">
+          <div class="admin-confirm-icon-wrap" id="admin-confirm-icon-wrap">
+            <i class="fas fa-exclamation-triangle" id="admin-confirm-icon"></i>
+          </div>
+          <h3 class="admin-confirm-title" id="admin-confirm-title">Are you sure?</h3>
+          <div class="admin-confirm-msg" id="admin-confirm-msg">This action cannot be undone.</div>
+          <div class="admin-confirm-actions">
+            <button type="button" class="btn btn-secondary" id="admin-confirm-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-danger" id="admin-confirm-ok-btn">Confirm</button>
           </div>
         </div>
       </div>
@@ -997,44 +1082,95 @@
     setupAdminModalEvents();
   }
 
+  // Centered Confirmation / Permission Modal (Custom, replaces browser confirm dialog)
+  window.showAdminCenterConfirm = function({
+    title = "Are you sure?",
+    message = "This action will apply immediately.",
+    icon = "fas fa-exclamation-triangle",
+    iconColor = "#ef4444",
+    confirmText = "Confirm",
+    cancelText = "Cancel",
+    isDanger = true,
+    onConfirm = null
+  } = {}) {
+    return new Promise((resolve) => {
+      const dialog = document.getElementById("admin-center-confirm-dialog");
+      if (!dialog) {
+        if (window.confirm(message)) {
+          if (typeof onConfirm === "function") onConfirm();
+          return resolve(true);
+        }
+        return resolve(false);
+      }
+
+      const titleEl = document.getElementById("admin-confirm-title");
+      const msgEl = document.getElementById("admin-confirm-msg");
+      const iconEl = document.getElementById("admin-confirm-icon");
+      const iconWrap = document.getElementById("admin-confirm-icon-wrap");
+      const okBtn = document.getElementById("admin-confirm-ok-btn");
+      const cancelBtn = document.getElementById("admin-confirm-cancel-btn");
+
+      if (titleEl) titleEl.textContent = title;
+      if (msgEl) msgEl.innerHTML = message;
+      if (iconEl) iconEl.className = icon;
+      if (iconWrap) {
+        iconWrap.style.color = iconColor;
+        iconWrap.style.borderColor = iconColor;
+        iconWrap.style.boxShadow = `0 0 25px ${iconColor}55`;
+      }
+
+      if (okBtn) {
+        okBtn.innerHTML = `<i class="fas fa-check"></i> ${confirmText}`;
+        okBtn.className = isDanger ? "btn btn-danger" : "btn btn-primary";
+      }
+      if (cancelBtn) {
+        cancelBtn.textContent = cancelText;
+      }
+
+      const closeConfirm = () => {
+        dialog.classList.remove("active");
+      };
+
+      const handleOk = async () => {
+        closeConfirm();
+        okBtn.removeEventListener("click", handleOk);
+        cancelBtn.removeEventListener("click", handleCancel);
+        if (typeof onConfirm === "function") {
+          try {
+            await onConfirm();
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        closeConfirm();
+        okBtn.removeEventListener("click", handleOk);
+        cancelBtn.removeEventListener("click", handleCancel);
+        resolve(false);
+      };
+
+      okBtn.addEventListener("click", handleOk);
+      cancelBtn.addEventListener("click", handleCancel);
+
+      dialog.classList.add("active");
+    });
+  };
+
   // 4. Setup Events inside Admin Modal
   function setupAdminModalEvents() {
-    // Tab scrolling and switching
-    const tabsNav = document.getElementById("admin-tabs-nav") || document.querySelector(".admin-tabs-nav");
-    const scrollLeftBtn = document.getElementById("admin-tab-scroll-left");
-    const scrollRightBtn = document.getElementById("admin-tab-scroll-right");
-
-    if (tabsNav) {
-      // Horizontal mousewheel scrolling on tabs bar
-      tabsNav.addEventListener("wheel", (e) => {
-        if (e.deltaY !== 0) {
-          e.preventDefault();
-          tabsNav.scrollLeft += e.deltaY * 1.5;
-        }
-      }, { passive: false });
-
-      if (scrollLeftBtn) {
-        scrollLeftBtn.addEventListener("click", () => {
-          tabsNav.scrollBy({ left: -220, behavior: "smooth" });
-        });
-      }
-      if (scrollRightBtn) {
-        scrollRightBtn.addEventListener("click", () => {
-          tabsNav.scrollBy({ left: 220, behavior: "smooth" });
-        });
-      }
-    }
-
-    const tabs = document.querySelectorAll(".admin-tab-btn");
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
+    // Menu navigation switching
+    const menuItems = document.querySelectorAll(".admin-menu-item, .admin-tab-btn");
+    menuItems.forEach(item => {
+      item.addEventListener("click", () => {
+        menuItems.forEach(m => m.classList.remove("active"));
         document.querySelectorAll(".admin-tab-pane").forEach(p => p.classList.remove("active"));
 
-        tab.classList.add("active");
-        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        item.classList.add("active");
 
-        const targetId = tab.dataset.tab;
+        const targetId = item.dataset.tab;
         const targetPane = document.getElementById(targetId);
         if (targetPane) targetPane.classList.add("active");
         if (targetId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
@@ -1109,30 +1245,57 @@
       });
     }
 
-    // Projects: Add new project toggle
+    // Centered Popup Modal: Project Add / Edit Controls
+    const projModal = document.getElementById("admin-project-popup-modal");
     const btnToggleForm = document.getElementById("btn-toggle-project-form");
-    const formWrap = document.getElementById("admin-project-form-wrap");
     const btnCancelForm = document.getElementById("btn-cancel-project-form");
     const btnCancelProjItem = document.getElementById("btn-cancel-project-item");
+    const btnSaveProjItem = document.getElementById("btn-save-project-item");
 
-    if (btnToggleForm && formWrap) {
-      btnToggleForm.addEventListener("click", () => {
+    window.openProjectModal = function(projIdx = null) {
+      if (projIdx === null) {
         editingProjectId = null;
         resetProjectForm();
-        document.getElementById("proj-form-title").innerHTML = `<i class="fas fa-folder-plus"></i> Add New Project`;
-        formWrap.style.display = formWrap.style.display === "none" ? "block" : "none";
-        if (formWrap.style.display === "block") {
-          formWrap.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    }
+        const titleEl = document.getElementById("proj-form-title");
+        if (titleEl) titleEl.innerHTML = `<i class="fas fa-folder-plus"></i> Add New Project`;
+        if (btnSaveProjItem) btnSaveProjItem.innerHTML = `<i class="fas fa-check"></i> Save Project`;
+      } else {
+        const proj = adminConfig.projects[projIdx];
+        if (!proj) return;
+        editingProjectId = proj.id || ("proj-" + projIdx);
+        document.getElementById("proj-input-title").value = proj.title || "";
+        document.getElementById("proj-input-category").value = proj.category || "Full-Stack Web Development (2025–2026)";
+        document.getElementById("proj-input-placement").value = "normal";
+        document.getElementById("proj-input-stats").value = proj.stats || "";
+        document.getElementById("proj-input-desc").value = proj.description || "";
+        document.getElementById("proj-input-tags").value = (proj.tags || []).join(", ");
+        document.getElementById("proj-input-live").value = proj.liveUrl || "#";
+        document.getElementById("proj-input-code").value = proj.codeUrl || "https://github.com";
+        document.getElementById("proj-input-image").value = proj.image || "";
+        document.getElementById("proj-img-preview").src = proj.image || "assets/project1.jpg";
+        document.getElementById("proj-input-enabled").checked = proj.enabled !== false;
+        document.getElementById("proj-input-featured").checked = proj.featured !== false;
 
-    const hideForm = () => {
-      if (formWrap) formWrap.style.display = "none";
+        const titleEl = document.getElementById("proj-form-title");
+        if (titleEl) titleEl.innerHTML = `<i class="fas fa-pencil-alt"></i> Edit Project: ${proj.title}`;
+        if (btnSaveProjItem) btnSaveProjItem.innerHTML = `<i class="fas fa-save"></i> Update Project`;
+      }
+      if (projModal) projModal.classList.add("active");
+    };
+
+    window.closeProjectModal = function() {
+      if (projModal) projModal.classList.remove("active");
       editingProjectId = null;
     };
-    if (btnCancelForm) btnCancelForm.addEventListener("click", hideForm);
-    if (btnCancelProjItem) btnCancelProjItem.addEventListener("click", hideForm);
+
+    if (btnToggleForm) {
+      btnToggleForm.addEventListener("click", () => window.openProjectModal(null));
+    }
+    if (btnCancelForm) btnCancelForm.addEventListener("click", window.closeProjectModal);
+    if (btnCancelProjItem) btnCancelProjItem.addEventListener("click", window.closeProjectModal);
+    if (btnSaveProjItem) {
+      btnSaveProjItem.addEventListener("click", () => saveProjectForm());
+    }
 
     // Project image file upload
     const projImgInput = document.getElementById("proj-input-image");
@@ -1159,11 +1322,80 @@
       });
     }
 
-    // Save project item button
-    const btnSaveProjItem = document.getElementById("btn-save-project-item");
-    if (btnSaveProjItem) {
-      btnSaveProjItem.addEventListener("click", () => saveProjectForm());
+    // Centered Popup Modal: Add New Skill Controls
+    const skillModal = document.getElementById("admin-skill-popup-modal");
+    const btnAddSkill = document.getElementById("btn-add-skill-row");
+    const btnCloseSkill = document.getElementById("btn-close-skill-modal");
+    const btnCancelSkill = document.getElementById("btn-cancel-skill-modal");
+    const btnSaveSkill = document.getElementById("btn-save-skill-modal");
+    const skillLevelRange = document.getElementById("skill-modal-level");
+    const skillLevelVal = document.getElementById("skill-modal-level-val");
+
+    if (skillLevelRange && skillLevelVal) {
+      skillLevelRange.addEventListener("input", (e) => {
+        skillLevelVal.textContent = e.target.value + "%";
+      });
     }
+
+    // Preset icon buttons
+    const skillPresets = document.querySelectorAll(".skill-preset-btn");
+    skillPresets.forEach(btn => {
+      btn.addEventListener("click", () => {
+        skillPresets.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const iconInput = document.getElementById("skill-modal-icon");
+        if (iconInput) iconInput.value = btn.dataset.icon;
+      });
+    });
+
+    window.openSkillModal = function() {
+      const nameInp = document.getElementById("skill-modal-name");
+      if (nameInp) { nameInp.value = ""; }
+      if (skillLevelRange) skillLevelRange.value = 90;
+      if (skillLevelVal) skillLevelVal.textContent = "90%";
+      if (skillModal) skillModal.classList.add("active");
+    };
+
+    window.closeSkillModal = function() {
+      if (skillModal) skillModal.classList.remove("active");
+    };
+
+    if (btnAddSkill) btnAddSkill.addEventListener("click", window.openSkillModal);
+    if (btnCloseSkill) btnCloseSkill.addEventListener("click", window.closeSkillModal);
+    if (btnCancelSkill) btnCancelSkill.addEventListener("click", window.closeSkillModal);
+
+    if (btnSaveSkill) {
+      btnSaveSkill.addEventListener("click", () => {
+        const nameInp = document.getElementById("skill-modal-name");
+        const name = nameInp ? nameInp.value.trim() : "";
+        if (!name) {
+          showToast("Please enter a Skill Name.", "warn");
+          return;
+        }
+        const level = skillLevelRange ? parseInt(skillLevelRange.value) || 90 : 90;
+        const catSel = document.getElementById("skill-modal-cat");
+        const category = catSel ? catSel.value : "web";
+        const iconInp = document.getElementById("skill-modal-icon");
+        const icon = iconInp ? iconInp.value : "fas fa-code";
+
+        if (!adminConfig.skills) adminConfig.skills = [];
+        adminConfig.skills.push({ name, level, category, icon });
+        renderSkillsAdminList();
+        saveActiveConfig(adminConfig);
+        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        window.closeSkillModal();
+        showToast(`✅ Added skill "${name}" successfully!`, "success");
+      });
+    }
+
+    // Close popups on overlay backdrop click
+    [projModal, skillModal, document.getElementById("admin-center-confirm-dialog")].forEach(overlay => {
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) overlay.classList.remove("active");
+        });
+      }
+    });
 
     // Import JSON file input
     const importInput = document.getElementById("admin-import-file-input");
@@ -1188,34 +1420,24 @@
       });
     }
 
-    // Reset Defaults button
+    // Reset Defaults button using centered confirmation dialog
     const btnReset = document.getElementById("btn-reset-defaults");
     if (btnReset) {
       btnReset.addEventListener("click", () => {
-        const ok = confirm("Are you sure you want to restore original factory defaults? Any customized text or added projects will be reset.");
-        if (ok) {
-          adminConfig = resetActiveConfig();
-          populateAdminForm(adminConfig);
-          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
-          showToast("🔄 Portfolio reset to factory defaults.", "info");
-        }
-      });
-    }
-
-    // Add Skill Row button
-    const btnAddSkill = document.getElementById("btn-add-skill-row");
-    if (btnAddSkill) {
-      btnAddSkill.addEventListener("click", () => {
-        if (!adminConfig.skills) adminConfig.skills = [];
-        adminConfig.skills.push({
-          name: "New Technical Skill",
-          level: 90,
-          category: "web",
-          icon: "fas fa-code"
+        showAdminCenterConfirm({
+          title: "Restore Factory Defaults?",
+          message: "Are you sure you want to restore original factory defaults? Any customized text, added projects, or skills will be reset.",
+          confirmText: "Reset Everything",
+          icon: "fas fa-undo-alt",
+          iconColor: "#ef4444",
+          isDanger: true,
+          onConfirm: () => {
+            adminConfig = resetActiveConfig();
+            populateAdminForm(adminConfig);
+            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+            showToast("🔄 Portfolio reset to factory defaults.", "info");
+          }
         });
-        renderSkillsAdminList();
-        saveActiveConfig(adminConfig);
-        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
       });
     }
 
@@ -1501,7 +1723,7 @@
       });
     });
 
-    // Project edit buttons
+    // Project edit buttons (Opens centered popup modal)
     list.querySelectorAll(".proj-edit-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.index);
@@ -1509,46 +1731,36 @@
       });
     });
 
-    // Project delete buttons
+    // Project delete buttons (Uses centered confirmation dialog)
     list.querySelectorAll(".proj-delete-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.index);
         const proj = adminConfig.projects[idx];
-        if (proj && confirm(`Are you sure you want to delete "${proj.title}"?`)) {
-          adminConfig.projects.splice(idx, 1);
-          renderProjectsAdminList();
-          saveActiveConfig(adminConfig);
-          if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
-          showToast(`Deleted project "${proj.title}".`);
+        if (proj) {
+          showAdminCenterConfirm({
+            title: "Delete Project?",
+            message: `Are you sure you want to delete <strong>"${proj.title}"</strong>?<br>It will be removed permanently from your portfolio.`,
+            confirmText: "Delete Project",
+            icon: "fas fa-trash-alt",
+            iconColor: "#ef4444",
+            isDanger: true,
+            onConfirm: () => {
+              adminConfig.projects.splice(idx, 1);
+              renderProjectsAdminList();
+              saveActiveConfig(adminConfig);
+              if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+              showToast(`Deleted project "${proj.title}".`);
+            }
+          });
         }
       });
     });
   }
 
-  // 7. Edit Project Item
+  // 7. Edit Project Item (Opens centered popup modal)
   function editProjectItem(idx) {
-    const proj = adminConfig.projects[idx];
-    if (!proj) return;
-
-    editingProjectId = proj.id || ("proj-" + idx);
-
-    document.getElementById("proj-input-title").value = proj.title || "";
-    document.getElementById("proj-input-category").value = proj.category || "Full-Stack Web Development (2025–2026)";
-    document.getElementById("proj-input-stats").value = proj.stats || "";
-    document.getElementById("proj-input-desc").value = proj.description || "";
-    document.getElementById("proj-input-tags").value = (proj.tags || []).join(", ");
-    document.getElementById("proj-input-live").value = proj.liveUrl || "#";
-    document.getElementById("proj-input-code").value = proj.codeUrl || "https://github.com";
-    document.getElementById("proj-input-image").value = proj.image || "";
-    document.getElementById("proj-img-preview").src = proj.image || "assets/project1.jpg";
-    document.getElementById("proj-input-enabled").checked = proj.enabled !== false;
-    document.getElementById("proj-input-featured").checked = proj.featured !== false;
-
-    document.getElementById("proj-form-title").innerHTML = `<i class="fas fa-pencil-alt"></i> Edit Project: ${proj.title}`;
-    const formWrap = document.getElementById("admin-project-form-wrap");
-    if (formWrap) {
-      formWrap.style.display = "block";
-      formWrap.scrollIntoView({ behavior: "smooth" });
+    if (typeof window.openProjectModal === "function") {
+      window.openProjectModal(idx);
     }
   }
 
@@ -1621,7 +1833,9 @@
     }
 
     editingProjectId = null;
-    document.getElementById("admin-project-form-wrap").style.display = "none";
+    if (typeof window.closeProjectModal === "function") {
+      window.closeProjectModal();
+    }
     renderProjectsAdminList();
     saveActiveConfig(adminConfig);
     if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
@@ -1698,10 +1912,22 @@
     container.querySelectorAll(".skill-del-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.idx);
-        adminConfig.skills.splice(idx, 1);
-        renderSkillsAdminList();
-        saveActiveConfig(adminConfig);
-        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        const sk = adminConfig.skills[idx];
+        showAdminCenterConfirm({
+          title: "Delete Technical Skill?",
+          message: `Are you sure you want to remove <strong>"${sk ? sk.name : 'this skill'}"</strong> from your arsenal?`,
+          confirmText: "Delete Skill",
+          icon: "fas fa-trash-alt",
+          iconColor: "#ef4444",
+          isDanger: true,
+          onConfirm: () => {
+            adminConfig.skills.splice(idx, 1);
+            renderSkillsAdminList();
+            saveActiveConfig(adminConfig);
+            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+            showToast("Skill deleted successfully.");
+          }
+        });
       });
     });
   }
@@ -1779,10 +2005,22 @@
     container.querySelectorAll(".exp-del-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.idx);
-        adminConfig.experiences.splice(idx, 1);
-        renderExperienceAdminList();
-        saveActiveConfig(adminConfig);
-        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        const exp = adminConfig.experiences[idx];
+        showAdminCenterConfirm({
+          title: "Delete Career Milestone?",
+          message: `Are you sure you want to remove milestone <strong>"${exp ? (exp.role || exp.year) : 'Item'}"</strong>?`,
+          confirmText: "Delete Milestone",
+          icon: "fas fa-trash-alt",
+          iconColor: "#ef4444",
+          isDanger: true,
+          onConfirm: () => {
+            adminConfig.experiences.splice(idx, 1);
+            renderExperienceAdminList();
+            saveActiveConfig(adminConfig);
+            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+            showToast("Milestone removed successfully.");
+          }
+        });
       });
     });
   }
@@ -1864,10 +2102,22 @@
     container.querySelectorAll(".ch-del-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.idx);
-        adminConfig.channels.splice(idx, 1);
-        renderChannelsAdminList();
-        saveActiveConfig(adminConfig);
-        if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+        const ch = adminConfig.channels[idx];
+        showAdminCenterConfirm({
+          title: "Delete Direct Channel?",
+          message: `Are you sure you want to remove channel <strong>"${ch ? ch.title : 'Link'}"</strong>?`,
+          confirmText: "Delete Channel",
+          icon: "fas fa-trash-alt",
+          iconColor: "#ef4444",
+          isDanger: true,
+          onConfirm: () => {
+            adminConfig.channels.splice(idx, 1);
+            renderChannelsAdminList();
+            saveActiveConfig(adminConfig);
+            if (window.refreshPortfolioFromConfig) window.refreshPortfolioFromConfig(adminConfig);
+            showToast("Channel removed.");
+          }
+        });
       });
     });
   }
@@ -1974,15 +2224,24 @@
 
       const delBtn = card.querySelector(".inq-del-btn");
       if (delBtn) {
-        delBtn.addEventListener("click", async () => {
-          if (confirm("Are you sure you want to remove this inquiry?")) {
-            delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
-            delBtn.disabled = true;
-            if (typeof deleteInquiryFromCloud === "function") {
-              await deleteInquiryFromCloud(inq.id || idx);
+        delBtn.addEventListener("click", () => {
+          showAdminCenterConfirm({
+            title: "Remove Client Inquiry?",
+            message: `Are you sure you want to remove inquiry from <strong>${escapeHtml(inq.name || 'Client')}</strong>?`,
+            confirmText: "Remove Inquiry",
+            icon: "fas fa-trash-alt",
+            iconColor: "#ef4444",
+            isDanger: true,
+            onConfirm: async () => {
+              delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+              delBtn.disabled = true;
+              if (typeof deleteInquiryFromCloud === "function") {
+                await deleteInquiryFromCloud(inq.id || idx);
+              }
+              loadAndRenderAdminInquiries();
+              showToast("Inquiry removed.");
             }
-            loadAndRenderAdminInquiries();
-          }
+          });
         });
       }
 
@@ -2066,15 +2325,24 @@
 
       const delBtn = card.querySelector(".rev-del-btn");
       if (delBtn) {
-        delBtn.addEventListener("click", async () => {
-          if (confirm(`Are you sure you want to delete this review by "${rev.author || 'Client'}"? It will be removed permanently from portfolio and cloud.`)) {
-            delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting...`;
-            delBtn.disabled = true;
-            if (typeof deleteReviewFromCloud === "function") {
-              await deleteReviewFromCloud(rev.id);
+        delBtn.addEventListener("click", () => {
+          showAdminCenterConfirm({
+            title: "Delete Client Review?",
+            message: `Are you sure you want to delete this review by <strong>"${escapeHtml(rev.author || 'Client')}"</strong>?<br>It will be removed permanently from portfolio and cloud database.`,
+            confirmText: "Delete Review Permanently",
+            icon: "fas fa-trash-alt",
+            iconColor: "#ef4444",
+            isDanger: true,
+            onConfirm: async () => {
+              delBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting...`;
+              delBtn.disabled = true;
+              if (typeof deleteReviewFromCloud === "function") {
+                await deleteReviewFromCloud(rev.id);
+              }
+              loadAndRenderAdminReviews();
+              showToast("Review deleted permanently.");
             }
-            loadAndRenderAdminReviews();
-          }
+          });
         });
       }
 
