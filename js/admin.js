@@ -121,23 +121,21 @@
     editingProjectId = null;
   };
 
-  // Quick switch to a specific tab
+  // Quick switch to a specific tab - Ultra-Fast (Zero Latency)
   window.switchAdminTab = function(tabId) {
-    const tabs = document.querySelectorAll(".admin-tab-btn");
+    const tabs = document.querySelectorAll(".admin-tab-btn, .admin-menu-item");
     const panes = document.querySelectorAll(".admin-tab-pane");
     tabs.forEach(t => {
-      const match = t.dataset.tab === tabId;
-      t.classList.toggle("active", match);
-      if (match) {
-        t.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-      }
+      t.classList.toggle("active", t.dataset.tab === tabId);
     });
     panes.forEach(p => p.classList.toggle("active", p.id === tabId));
+    const modalBody = document.querySelector(".admin-modal-body");
+    if (modalBody) modalBody.scrollTop = 0;
     if (tabId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
-      loadAndRenderAdminInquiries();
+      setTimeout(loadAndRenderAdminInquiries, 0);
     }
     if (tabId === "tab-reviews" && typeof loadAndRenderAdminReviews === "function") {
-      loadAndRenderAdminReviews();
+      setTimeout(loadAndRenderAdminReviews, 0);
     }
   };
 
@@ -1161,23 +1159,22 @@
 
   // 4. Setup Events inside Admin Modal
   function setupAdminModalEvents() {
-    // Menu navigation switching
+    // Menu navigation switching - Instantaneous (Zero Lag)
     const menuItems = document.querySelectorAll(".admin-menu-item, .admin-tab-btn");
+    const modalBody = document.querySelector(".admin-modal-body");
     menuItems.forEach(item => {
       item.addEventListener("click", () => {
-        menuItems.forEach(m => m.classList.remove("active"));
-        document.querySelectorAll(".admin-tab-pane").forEach(p => p.classList.remove("active"));
-
-        item.classList.add("active");
-
         const targetId = item.dataset.tab;
-        const targetPane = document.getElementById(targetId);
-        if (targetPane) targetPane.classList.add("active");
+        menuItems.forEach(m => m.classList.toggle("active", m === item));
+        document.querySelectorAll(".admin-tab-pane").forEach(p => p.classList.toggle("active", p.id === targetId));
+
+        if (modalBody) modalBody.scrollTop = 0;
+
         if (targetId === "tab-inquiries" && typeof loadAndRenderAdminInquiries === "function") {
-          loadAndRenderAdminInquiries();
+          setTimeout(loadAndRenderAdminInquiries, 0);
         }
         if (targetId === "tab-reviews" && typeof loadAndRenderAdminReviews === "function") {
-          loadAndRenderAdminReviews();
+          setTimeout(loadAndRenderAdminReviews, 0);
         }
       });
     });
@@ -1632,12 +1629,14 @@
     renderSkillsAdminList();
     renderExperienceAdminList();
     renderChannelsAdminList();
-    if (typeof loadAndRenderAdminInquiries === "function") {
-      loadAndRenderAdminInquiries();
-    }
-    if (typeof loadAndRenderAdminReviews === "function") {
-      loadAndRenderAdminReviews();
-    }
+    setTimeout(() => {
+      if (typeof loadAndRenderAdminInquiries === "function") {
+        loadAndRenderAdminInquiries();
+      }
+      if (typeof loadAndRenderAdminReviews === "function") {
+        loadAndRenderAdminReviews();
+      }
+    }, 60);
   }
 
   function setVal(id, val) {
