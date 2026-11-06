@@ -241,7 +241,7 @@
       "description": "Successfully passed and graduated Intermediate in Computer Science (ICS) with rigorous academic focus on Computer Science principles, Mathematics, Analytical Logic, and Programming Foundations."
     },
     {
-      "year": "2023",
+      "year": "2025",
       "role": "3D Animation & Procedural CGI",
       "company": "Spatial 3D Studio & Blender",
       "period": "2023 — 2024",
@@ -269,5 +269,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942374691
+  "updatedAt": 1793942390411
 }
