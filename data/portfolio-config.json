@@ -60,7 +60,7 @@
       "url": "https://youtube.com",
       "icon": "fab fa-youtube",
       "color": "#ff0000",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "ch-tiktok",
@@ -69,7 +69,7 @@
       "url": "https://tiktok.com",
       "icon": "fab fa-tiktok",
       "color": "#fe2c55",
-      "enabled": true
+      "enabled": false
     }
   ],
   "projects": [
@@ -269,5 +269,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942402597
+  "updatedAt": 1793942471246
 }
