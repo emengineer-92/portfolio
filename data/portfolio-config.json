@@ -32,7 +32,7 @@
     "experienceYears": "5 +",
     "completedProjects": "99+",
     "codeCommits": "8.4k",
-    "clientSatisfaction": "100%"
+    "clientSatisfaction": "89%"
   },
   "theme": {
     "primaryColor": "#38bdf8",
@@ -263,5 +263,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942057109
+  "updatedAt": 1793942087037
 }
