@@ -215,7 +215,7 @@
     {
       "year": "NOW",
       "role": "BS Computer Science (BS CS)",
-      "company": "University CS Program Admission",
+      "company": "Virtual universty",
       "period": "Late 2026 — Present",
       "description": "Entering Bachelor of Science in Computer Science (BS CS) to master computational theory, advanced algorithms, software engineering architecture, and artificial intelligence."
     },
@@ -269,5 +269,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942231945
+  "updatedAt": 1793942333835
 }
