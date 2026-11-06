@@ -203,6 +203,12 @@
       "level": 98,
       "category": "office",
       "icon": "fas fa-briefcase"
+    },
+    {
+      "name": "Project management",
+      "level": 90,
+      "category": "web",
+      "icon": "fas fa-code"
     }
   ],
   "experiences": [
@@ -263,5 +269,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942154943
+  "updatedAt": 1793942231945
 }
