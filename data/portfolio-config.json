@@ -176,7 +176,7 @@
     },
     {
       "name": "Robotics & Hardware Passion (Microcontrollers, Embedded Logic, Sensors, Circuitry)",
-      "level": 94,
+      "level": 99,
       "category": "robotics",
       "icon": "fas fa-robot"
     },
@@ -263,5 +263,5 @@
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
     }
   ],
-  "updatedAt": 1793942092845
+  "updatedAt": 1793942141825
 }
